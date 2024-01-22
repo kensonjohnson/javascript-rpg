@@ -18,7 +18,7 @@ export class GameObject {
       gameObject: this,
       src:
         config.src ??
-        import.meta.env.BASE_URL + "/images/characters/people/hero.png",
+        import.meta.env.BASE_URL + "images/characters/people/hero.png",
     });
   }
 }

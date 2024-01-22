@@ -33,7 +33,7 @@ export class Sprite {
     this.useShadow = config.useShadow ?? true;
     if (this.useShadow) {
       this.shadow.src =
-        import.meta.env.BASE_URL + "/images/characters/shadow.png";
+        import.meta.env.BASE_URL + "images/characters/shadow.png";
     }
     this.shadow.onload = () => {
       this.isShadowLoaded = true;
