@@ -5,7 +5,7 @@ type SpriteConfig = {
   useShadow?: boolean;
   animations?: any;
   currentAnimation?: string;
-  currentAnimationFrame?: number;
+  animationFrameLimit?: number;
   gameObject: GameObject;
 };
 
@@ -15,9 +15,11 @@ export class Sprite {
   shadow: HTMLImageElement;
   useShadow: boolean;
   isShadowLoaded: boolean | undefined;
-  animations: any;
-  currentAnimation: string;
+  animations: { [key: string]: number[][] };
+  currentAnimation: keyof typeof this.animations;
   currentAnimationFrame: number;
+  animationFrameLimit: number;
+  animationFrameProgress: number;
   gameObject: GameObject;
 
   constructor(config: SpriteConfig) {
@@ -41,12 +43,70 @@ export class Sprite {
 
     // Configure animations and initial state
     this.animations = config.animations ?? {
-      idleDown: [[0, 0]],
+      "idle-down": [[0, 0]],
+      "idle-right": [[0, 1]],
+      "idle-up": [[0, 2]],
+      "idle-left": [[0, 3]],
+      "walk-down": [
+        [1, 0],
+        [0, 0],
+        [3, 0],
+        [0, 0],
+      ],
+      "walk-right": [
+        [1, 1],
+        [0, 1],
+        [3, 1],
+        [0, 1],
+      ],
+      "walk-up": [
+        [1, 2],
+        [0, 2],
+        [3, 2],
+        [0, 2],
+      ],
+      "walk-left": [
+        [1, 3],
+        [0, 3],
+        [3, 3],
+        [0, 3],
+      ],
     };
-    this.currentAnimation = config.currentAnimation ?? "idleDown";
-    this.currentAnimationFrame = config.currentAnimationFrame ?? 0;
+    this.currentAnimation = config.currentAnimation ?? "idle-down";
+    this.currentAnimationFrame = 0;
+
+    this.animationFrameLimit = config.animationFrameLimit ?? 16;
+    this.animationFrameProgress = this.animationFrameLimit;
 
     this.gameObject = config.gameObject;
+  }
+
+  get frame() {
+    return this.animations[this.currentAnimation][this.currentAnimationFrame];
+  }
+
+  setAnimation(key: keyof typeof this.animations) {
+    if (this.currentAnimation !== key) {
+      this.currentAnimation = key;
+      this.currentAnimationFrame = 0;
+      this.animationFrameProgress = this.animationFrameLimit;
+    }
+  }
+
+  updateAnimationProgress() {
+    // Downtick the animation frame progress
+    if (this.animationFrameProgress > 0) {
+      this.animationFrameProgress--;
+      return;
+    }
+
+    // Reset the animation frame progress
+    this.animationFrameProgress = this.animationFrameLimit;
+    this.currentAnimationFrame++;
+
+    if (this.frame === undefined) {
+      this.currentAnimationFrame = 0;
+    }
   }
 
   draw(context: CanvasRenderingContext2D) {
@@ -55,6 +115,21 @@ export class Sprite {
     const y = this.gameObject.y - 18;
 
     this.isShadowLoaded && context.drawImage(this.shadow, x, y);
-    context.drawImage(this.image, 0, 0, 32, 32, x, y, 32, 32);
+
+    const [frameX, frameY] = this.frame;
+
+    context.drawImage(
+      this.image,
+      frameX * 32,
+      frameY * 32,
+      32,
+      32,
+      x,
+      y,
+      32,
+      32
+    );
+
+    this.updateAnimationProgress();
   }
 }
