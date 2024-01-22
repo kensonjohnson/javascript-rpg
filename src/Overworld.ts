@@ -1,4 +1,4 @@
-import { GameObject } from "./GameObject";
+import { OverworldMap } from "./OverworldMap";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -8,37 +8,39 @@ export class Overworld {
   element: HTMLElement;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
+  map: OverworldMap | null;
   constructor(config: OverworldConfig) {
     this.element = config.element;
     this.canvas = this.element.querySelector(
       ".game-canvas"
     ) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+    this.map = null;
+  }
+
+  gameLoop() {
+    // Clear the canvas
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Draw lower image
+    this.map?.drawLowerImage(this.context);
+
+    // Draw game objects
+    Object.values(this.map?.gameObjects ?? {}).forEach((gameObject) => {
+      gameObject.sprite.draw(this.context);
+    });
+
+    // Draw upper image
+    this.map?.drawUpperImage(this.context);
+
+    requestAnimationFrame(() => this.gameLoop());
   }
 
   init() {
-    // Draw level
-    const image = new Image();
-    image.onload = () => {
-      this.context.drawImage(image, 0, 0);
-    };
-    image.src = import.meta.env.BASE_URL + "images/maps/DemoLower.png";
+    // Set up the map
+    this.map = new OverworldMap(window.OverworldMaps.Kitchen);
 
-    // Place some GameObjects
-    const hero = new GameObject({
-      x: 5,
-      y: 6,
-    });
-
-    const npc1 = new GameObject({
-      x: 7,
-      y: 9,
-      src: import.meta.env.BASE_URL + "images/characters/people/npc1.png",
-    });
-
-    setTimeout(() => {
-      hero.sprite.draw(this.context);
-      npc1.sprite.draw(this.context);
-    }, 100);
+    // Start game loop
+    this.gameLoop();
   }
 }
