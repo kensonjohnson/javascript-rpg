@@ -28,13 +28,12 @@ export class Overworld {
     const hero = new GameObject({
       x: 5,
       y: 6,
-      src: "/images/characters/people/hero.png",
     });
 
     const npc1 = new GameObject({
       x: 7,
       y: 9,
-      src: "/images/characters/people/npc1.png",
+      src: import.meta.env.BASE_URL + "/images/characters/people/npc1.png",
     });
 
     setTimeout(() => {

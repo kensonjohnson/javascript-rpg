@@ -16,7 +16,9 @@ export class GameObject {
     this.y = config.y ?? 0;
     this.sprite = new Sprite({
       gameObject: this,
-      src: config.src ?? "/images/characters/people/hero.png",
+      src:
+        config.src ??
+        import.meta.env.BASE_URL + "/images/characters/people/hero.png",
     });
   }
 }
