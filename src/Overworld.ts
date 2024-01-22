@@ -1,3 +1,5 @@
+import { GameObject } from "./GameObject";
+
 type OverworldConfig = {
   element: HTMLElement;
 };
@@ -22,40 +24,21 @@ export class Overworld {
     };
     image.src = "images/maps/DemoLower.png";
 
-    // Draw player
-    const x = 5;
-    const y = 6;
+    // Place some GameObjects
+    const hero = new GameObject({
+      x: 5,
+      y: 6,
+    });
 
-    const shadow = new Image();
-    shadow.onload = () => {
-      this.context.drawImage(
-        shadow, // image
-        0, // left cut
-        0, // top cut
-        32, // width cut
-        32, // height cut
-        x * 16 - 8, // x position with tile offset
-        y * 16 - 18, // y position with tile offset
-        32, // width
-        32 // height
-      );
-    };
-    shadow.src = "images/characters/shadow.png";
+    const npc1 = new GameObject({
+      x: 7,
+      y: 9,
+      src: "images/characters/people/npc1.png",
+    });
 
-    const hero = new Image();
-    hero.onload = () => {
-      this.context.drawImage(
-        hero, // image
-        0, // left cut
-        0, // top cut
-        32, // width cut
-        32, // height cut
-        x * 16 - 8, // x position with tile offset
-        y * 16 - 18, // y position with tile offset
-        32, // width
-        32 // height
-      );
-    };
-    hero.src = "images/characters/people/hero.png";
+    setTimeout(() => {
+      hero.sprite.draw(this.context);
+      npc1.sprite.draw(this.context);
+    }, 100);
   }
 }
