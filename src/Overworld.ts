@@ -12,6 +12,7 @@ export class Overworld {
   context: CanvasRenderingContext2D;
   map: OverworldMap | null;
   directionInput?: DirectionInput;
+  timestamp: number;
   constructor(config: OverworldConfig) {
     this.element = config.element;
     this.canvas = this.element.querySelector(
@@ -19,9 +20,23 @@ export class Overworld {
     ) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
     this.map = null;
+    this.timestamp = 0;
   }
 
   gameLoop() {
+    // Find the time since the last frame
+    const now = Date.now();
+    const delta = now - this.timestamp;
+
+    // If the time since the last frame is too short, don't update
+    if (delta < 1000 / 60) {
+      requestAnimationFrame(() => this.gameLoop());
+      return;
+    }
+
+    // Update the timestamp
+    this.timestamp = now;
+
     // Clear the canvas
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 

@@ -29,6 +29,8 @@ export class Person extends GameObject {
 
   update(state: { arrow: ValidDirections }) {
     this.updatePosition();
+    this.updateSprite(state);
+
     if (
       this.isPlayerControlled &&
       this.movingProgressRemaining === 0 &&
@@ -47,6 +49,20 @@ export class Person extends GameObject {
         ];
       this[property as "x" | "y"] += change;
       this.movingProgressRemaining--;
+    }
+  }
+
+  updateSprite(state: { arrow: ValidDirections }) {
+    if (
+      this.isPlayerControlled &&
+      this.movingProgressRemaining === 0 &&
+      !state.arrow
+    ) {
+      this.sprite.setAnimation("idle-" + this.direction);
+    }
+
+    if (this.movingProgressRemaining > 0) {
+      this.sprite.setAnimation("walk-" + this.direction);
     }
   }
 }
