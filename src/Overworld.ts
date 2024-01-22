@@ -1,4 +1,6 @@
+import { DirectionInput } from "./DirectionInput";
 import { OverworldMap } from "./OverworldMap";
+import { ValidDirections } from "./Person";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -9,6 +11,7 @@ export class Overworld {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   map: OverworldMap | null;
+  directionInput?: DirectionInput;
   constructor(config: OverworldConfig) {
     this.element = config.element;
     this.canvas = this.element.querySelector(
@@ -27,6 +30,9 @@ export class Overworld {
 
     // Draw game objects
     Object.values(this.map?.gameObjects ?? {}).forEach((gameObject) => {
+      gameObject.update({
+        arrow: this.directionInput!.direction as ValidDirections,
+      });
       gameObject.sprite.draw(this.context);
     });
 
@@ -38,7 +44,11 @@ export class Overworld {
 
   init() {
     // Set up the map
-    this.map = new OverworldMap(window.OverworldMaps.Kitchen);
+    this.map = new OverworldMap(window.OverworldMaps.DemoRoom);
+
+    // Set up the direction controls
+    this.directionInput = new DirectionInput();
+    this.directionInput.init();
 
     // Start game loop
     this.gameLoop();
