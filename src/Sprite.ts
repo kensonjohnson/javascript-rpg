@@ -1,5 +1,14 @@
 import { GameObject } from "./GameObject";
 
+type SpriteConfig = {
+  src: string;
+  useShadow?: boolean;
+  animations?: any;
+  currentAnimation?: string;
+  currentAnimationFrame?: number;
+  gameObject: GameObject;
+};
+
 export class Sprite {
   image: HTMLImageElement;
   isLoaded: boolean | undefined;
@@ -11,7 +20,7 @@ export class Sprite {
   currentAnimationFrame: number;
   gameObject: GameObject;
 
-  constructor(config: any) {
+  constructor(config: SpriteConfig) {
     // Set up the image
     this.image = new Image();
     this.image.src = config.src;
