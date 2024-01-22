@@ -22,18 +22,19 @@ export class Overworld {
     image.onload = () => {
       this.context.drawImage(image, 0, 0);
     };
-    image.src = import.meta.url + "images/maps/DemoLower.png";
+    image.src = "/images/maps/DemoLower.png";
 
     // Place some GameObjects
     const hero = new GameObject({
       x: 5,
       y: 6,
+      src: "/images/characters/people/hero.png",
     });
 
     const npc1 = new GameObject({
       x: 7,
       y: 9,
-      src: import.meta.url + "images/characters/people/npc1.png",
+      src: "/images/characters/people/npc1.png",
     });
 
     setTimeout(() => {
