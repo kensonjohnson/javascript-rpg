@@ -55,9 +55,13 @@ export class Overworld {
     this.map.drawLowerImage(this.context, this.cameraPerson);
 
     // Draw game objects
-    Object.values(this.map.gameObjects ?? {}).forEach((gameObject) => {
-      gameObject.sprite.draw(this.context, this.cameraPerson);
-    });
+    Object.values(this.map.gameObjects ?? {})
+      .sort((a, b) => {
+        return a.y - b.y;
+      })
+      .forEach((gameObject) => {
+        gameObject.sprite.draw(this.context, this.cameraPerson);
+      });
 
     // Draw upper image
     this.map.drawUpperImage(this.context, this.cameraPerson);
