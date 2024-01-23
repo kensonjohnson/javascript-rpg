@@ -1,5 +1,7 @@
+import { gridSize } from "./config";
+
 export function withGridOffset(point: number) {
-  return point * 16;
+  return point * gridSize;
 }
 
 export function asGridCoord(x: number, y: number) {
@@ -13,19 +15,18 @@ export function nextPosition(
 ) {
   let x = currentX;
   let y = currentY;
-  const size = 16;
 
   if (direction === "up") {
-    y -= size;
+    y -= gridSize;
   }
   if (direction === "down") {
-    y += size;
+    y += gridSize;
   }
   if (direction === "left") {
-    x -= size;
+    x -= gridSize;
   }
   if (direction === "right") {
-    x += size;
+    x += gridSize;
   }
   return { x, y };
 }

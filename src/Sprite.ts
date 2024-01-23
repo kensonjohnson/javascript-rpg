@@ -1,3 +1,4 @@
+import { spriteSize } from "./config";
 import { GameObject } from "./GameObject";
 import { withGridOffset } from "./utils";
 
@@ -121,14 +122,14 @@ export class Sprite {
 
     context.drawImage(
       this.image,
-      frameX * 32,
-      frameY * 32,
-      32,
-      32,
+      frameX * spriteSize,
+      frameY * spriteSize,
+      spriteSize,
+      spriteSize,
       x,
       y,
-      32,
-      32
+      spriteSize,
+      spriteSize
     );
 
     this.updateAnimationProgress();
