@@ -1,6 +1,7 @@
 import { GameObject } from "./GameObject";
 import type { GameObjectConfig } from "./GameObject";
 import type { OverworldMap } from "./OverworldMap";
+import { emitEvent } from "./utils";
 
 export type ValidDirections = "up" | "down" | "left" | "right";
 
@@ -54,6 +55,7 @@ export class Person extends GameObject {
       }
       map.moveWall(this.x, this.y, this.direction);
       this.movingProgressRemaining = 16;
+      this.updateSprite();
     }
   }
 
@@ -65,6 +67,11 @@ export class Person extends GameObject {
         ];
       this[property as "x" | "y"] += change;
       this.movingProgressRemaining--;
+
+      if (this.movingProgressRemaining === 0) {
+        // Finished behavior
+        emitEvent("PersonWalkingComplete", { targetId: this.id });
+      }
     }
   }
 
