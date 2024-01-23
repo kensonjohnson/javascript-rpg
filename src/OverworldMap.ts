@@ -34,11 +34,19 @@ export class OverworldMap {
     this.upperImage.src = config.upperSrc;
   }
 
-  drawLowerImage(context: CanvasRenderingContext2D) {
-    context.drawImage(this.lowerImage, 0, 0);
+  drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
+    context.drawImage(
+      this.lowerImage,
+      asGridPoint(10.5) - cameraPerson.x,
+      asGridPoint(6) - cameraPerson.y
+    );
   }
-  drawUpperImage(context: CanvasRenderingContext2D) {
-    context.drawImage(this.upperImage, 0, 0);
+  drawUpperImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
+    context.drawImage(
+      this.upperImage,
+      asGridPoint(10.5) - cameraPerson.x,
+      asGridPoint(6) - cameraPerson.y
+    );
   }
 }
 
