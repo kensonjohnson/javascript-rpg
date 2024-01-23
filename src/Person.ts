@@ -75,8 +75,10 @@ export class Person extends GameObject {
     }
 
     if (behavior.type === "stand") {
+      this.isStanding = true;
       setTimeout(() => {
         emitEvent("PersonStandComplete", { targetId: this.id });
+        this.isStanding = false;
       }, behavior.time);
     }
   }

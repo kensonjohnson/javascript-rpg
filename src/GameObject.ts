@@ -21,6 +21,7 @@ type BehaviorConfig = {
 export class GameObject {
   id: string | null;
   isMounted: boolean;
+  isStanding: boolean;
   x: number;
   y: number;
   direction: "up" | "down" | "left" | "right";
@@ -31,6 +32,7 @@ export class GameObject {
   constructor(config: GameObjectConfig) {
     this.id = null;
     this.isMounted = false;
+    this.isStanding = false;
     this.x = config.x ?? 0;
     this.y = config.y ?? 0;
     this.direction = config.direction ?? "down";
@@ -59,7 +61,11 @@ export class GameObject {
   async doBehaviorEvent(map: OverworldMap) {
     // Short circuit if global cutscene is running
     // or if we have no behavior loop
-    if (map.isCutscenePlaying || this.behaviorLoop.length === 0) {
+    if (
+      map.isCutscenePlaying ||
+      this.behaviorLoop.length === 0 ||
+      this.isStanding
+    ) {
       return;
     }
 
