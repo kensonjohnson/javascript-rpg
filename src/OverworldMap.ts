@@ -1,6 +1,7 @@
 import { Person } from "./Person";
 import { asGridCoord, nextPosition, withGridOffset } from "./utils";
 import type { GameObject } from "./GameObject";
+import { OverworldEvent, type BehaviorEvent } from "./OverworldEvent";
 
 declare global {
   interface Window {
@@ -38,7 +39,7 @@ export class OverworldMap {
     this.lowerImage.src = config.lowerSrc;
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
-    this.isCutscenePlaying = false;
+    this.isCutscenePlaying = true;
   }
 
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
@@ -74,6 +75,19 @@ export class OverworldMap {
       // TODO: determine if this object should actually mount
       gameObject.mount(this);
     });
+  }
+
+  async startCutscene(events: BehaviorEvent[]) {
+    this.isCutscenePlaying = true;
+
+    // Start a loop of async events
+    // and await each one
+    for (const event of events) {
+      const eventHandler = new OverworldEvent({ map: this, event });
+      await eventHandler.init();
+    }
+
+    this.isCutscenePlaying = false;
   }
 
   addWall(x: number, y: number) {

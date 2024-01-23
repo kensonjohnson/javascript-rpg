@@ -78,5 +78,15 @@ export class Overworld {
 
     // Start game loop
     this.gameLoop();
+
+    this.map.startCutscene([
+      { target: "hero", type: "walk", direction: "down" },
+      { target: "hero", type: "walk", direction: "down" },
+      { target: "npc1", type: "walk", direction: "left" },
+      { target: "npc1", type: "walk", direction: "left" },
+      { target: "npc1", type: "stand", direction: "up", time: 1500 },
+      { target: "npc1", type: "walk", direction: "right" },
+      { target: "npc1", type: "walk", direction: "right" },
+    ]);
   }
 }
