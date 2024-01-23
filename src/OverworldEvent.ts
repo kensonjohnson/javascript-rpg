@@ -16,7 +16,29 @@ export class OverworldEvent {
     this.event = event;
   }
 
-  stand(resolve: (value: unknown) => void) {}
+  stand(resolve: (value: unknown) => void) {
+    const target = this.map.gameObjects[this.event.target] as Person;
+    target.startBehavior(this.map, {
+      type: "stand",
+      direction: this.event.direction,
+      time: this.event.time,
+    });
+
+    const completeHandler = (event: CustomEvent<{ targetId: string }>) => {
+      if (event.detail.targetId === this.event.target) {
+        document.removeEventListener(
+          "PersonStandComplete",
+          completeHandler as EventListener
+        );
+        resolve(null);
+      }
+    };
+
+    document.addEventListener(
+      "PersonStandComplete",
+      completeHandler as EventListener
+    );
+  }
 
   walk(resolve: (value: unknown) => void) {
     const target = this.map.gameObjects[this.event.target] as Person;

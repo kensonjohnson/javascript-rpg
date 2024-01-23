@@ -46,9 +46,10 @@ export class Person extends GameObject {
 
   startBehavior(
     map: OverworldMap,
-    behavior: { type: string; direction: ValidDirections }
+    behavior: { type: string; direction: ValidDirections; time?: number }
   ) {
     this.direction = behavior.direction;
+
     if (behavior.type === "walk") {
       if (map.isSpaceTaken(this.x, this.y, this.direction)) {
         return;
@@ -56,6 +57,12 @@ export class Person extends GameObject {
       map.moveWall(this.x, this.y, this.direction);
       this.movingProgressRemaining = 16;
       this.updateSprite();
+    }
+
+    if (behavior.type === "stand") {
+      setTimeout(() => {
+        emitEvent("PersonStandComplete", { targetId: this.id });
+      }, behavior.time);
     }
   }
 
