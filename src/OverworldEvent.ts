@@ -45,6 +45,7 @@ export class OverworldEvent {
     target.startBehavior(this.map, {
       type: "walk",
       direction: this.event.direction,
+      retry: true,
     });
 
     // Wait for the target to finish walking before resolving

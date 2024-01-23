@@ -46,12 +46,23 @@ export class Person extends GameObject {
 
   startBehavior(
     map: OverworldMap,
-    behavior: { type: string; direction: ValidDirections; time?: number }
+    behavior: {
+      type: string;
+      direction: ValidDirections;
+      time?: number;
+      retry?: boolean;
+    }
   ) {
     this.direction = behavior.direction;
 
     if (behavior.type === "walk") {
       if (map.isSpaceTaken(this.x, this.y, this.direction)) {
+        if (behavior.retry) {
+          setTimeout(() => {
+            this.startBehavior(map, behavior);
+          }, 100);
+        }
+
         return;
       }
       map.moveWall(this.x, this.y, this.direction);
