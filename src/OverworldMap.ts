@@ -1,6 +1,6 @@
 import { GameObject } from "./GameObject";
 import { Person } from "./Person";
-import { asGridPoint } from "./utils";
+import { withGridOffset } from "./utils";
 
 declare global {
   interface Window {
@@ -37,15 +37,15 @@ export class OverworldMap {
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
     context.drawImage(
       this.lowerImage,
-      asGridPoint(10.5) - cameraPerson.x,
-      asGridPoint(6) - cameraPerson.y
+      withGridOffset(10.5) - cameraPerson.x,
+      withGridOffset(6) - cameraPerson.y
     );
   }
   drawUpperImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
     context.drawImage(
       this.upperImage,
-      asGridPoint(10.5) - cameraPerson.x,
-      asGridPoint(6) - cameraPerson.y
+      withGridOffset(10.5) - cameraPerson.x,
+      withGridOffset(6) - cameraPerson.y
     );
   }
 }
@@ -56,13 +56,13 @@ window.OverworldMaps = {
     upperSrc: import.meta.env.BASE_URL + "images/maps/DemoUpper.png",
     gameObjects: {
       hero: new Person({
-        x: asGridPoint(5),
-        y: asGridPoint(6),
+        x: withGridOffset(5),
+        y: withGridOffset(6),
         isPlayerControlled: true,
       }),
       npc1: new Person({
-        x: asGridPoint(7),
-        y: asGridPoint(9),
+        x: withGridOffset(7),
+        y: withGridOffset(9),
         src: import.meta.env.BASE_URL + "images/characters/people/npc1.png",
       }),
     },
@@ -72,17 +72,17 @@ window.OverworldMaps = {
     upperSrc: import.meta.env.BASE_URL + "images/maps/KitchenUpper.png",
     gameObjects: {
       hero: new Person({
-        x: asGridPoint(3),
-        y: asGridPoint(5),
+        x: withGridOffset(3),
+        y: withGridOffset(5),
       }),
       npcA: new Person({
-        x: asGridPoint(9),
-        y: asGridPoint(6),
+        x: withGridOffset(9),
+        y: withGridOffset(6),
         src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
       }),
       npcB: new Person({
-        x: asGridPoint(10),
-        y: asGridPoint(8),
+        x: withGridOffset(10),
+        y: withGridOffset(8),
         src: import.meta.env.BASE_URL + "images/characters/people/npc3.png",
       }),
     },

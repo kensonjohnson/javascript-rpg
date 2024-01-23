@@ -1,5 +1,5 @@
 import { GameObject } from "./GameObject";
-import { asGridPoint } from "./utils";
+import { withGridOffset } from "./utils";
 
 type SpriteConfig = {
   src: string;
@@ -112,8 +112,8 @@ export class Sprite {
 
   draw(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
     if (!this.isLoaded) return;
-    const x = this.gameObject.x - 8 + asGridPoint(10.5) - cameraPerson.x;
-    const y = this.gameObject.y - 18 + asGridPoint(6) - cameraPerson.y;
+    const x = this.gameObject.x - 8 + withGridOffset(10.5) - cameraPerson.x;
+    const y = this.gameObject.y - 18 + withGridOffset(6) - cameraPerson.y;
 
     this.isShadowLoaded && context.drawImage(this.shadow, x, y);
 

@@ -1,3 +1,3 @@
-export function asGridPoint(point: number) {
+export function withGridOffset(point: number) {
   return point * 16;
 }
