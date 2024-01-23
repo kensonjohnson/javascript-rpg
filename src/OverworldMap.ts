@@ -1,6 +1,7 @@
 import { Person } from "./Person";
 import { asGridCoord, nextPosition, withGridOffset } from "./utils";
 import type { GameObject } from "./GameObject";
+import { OverworldEvent, type BehaviorEvent } from "./OverworldEvent";
 
 declare global {
   interface Window {
@@ -9,7 +10,7 @@ declare global {
         lowerSrc: string;
         upperSrc: string;
         gameObjects: {
-          [key: string]: GameObject | Person;
+          [key: string]: Person;
         };
         walls?: { [key: string]: boolean };
       };
@@ -18,17 +19,19 @@ declare global {
 }
 
 type OverworldMapConfig = {
-  gameObjects: { [key: string]: GameObject | Person };
+  gameObjects: { [key: string]: Person };
   lowerSrc: string;
   upperSrc: string;
   walls?: { [key: string]: boolean };
 };
 
 export class OverworldMap {
-  gameObjects: { [key: string]: GameObject | Person };
+  gameObjects: { [key: string]: Person };
   walls: { [key: string]: boolean };
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
+  isCutscenePlaying: boolean;
+
   constructor(config: OverworldMapConfig) {
     this.gameObjects = config.gameObjects;
     this.walls = config.walls ?? {};
@@ -36,6 +39,7 @@ export class OverworldMap {
     this.lowerImage.src = config.lowerSrc;
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
+    this.isCutscenePlaying = true;
   }
 
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
@@ -64,11 +68,26 @@ export class OverworldMap {
   }
 
   mountObjects() {
-    Object.values(this.gameObjects).forEach((gameObject) => {
-      // TODO: determine if this object should actually mount
+    Object.keys(this.gameObjects).forEach((key) => {
+      const gameObject = this.gameObjects[key];
+      gameObject.id = key;
 
+      // TODO: determine if this object should actually mount
       gameObject.mount(this);
     });
+  }
+
+  async startCutscene(events: BehaviorEvent[]) {
+    this.isCutscenePlaying = true;
+
+    // Start a loop of async events
+    // and await each one
+    for (const event of events) {
+      const eventHandler = new OverworldEvent({ map: this, event });
+      await eventHandler.init();
+    }
+
+    this.isCutscenePlaying = false;
   }
 
   addWall(x: number, y: number) {
@@ -104,6 +123,24 @@ window.OverworldMaps = {
         x: withGridOffset(7),
         y: withGridOffset(9),
         src: import.meta.env.BASE_URL + "images/characters/people/npc1.png",
+        behaviorLoop: [
+          { type: "stand", direction: "up", time: 800 },
+          { type: "stand", direction: "left", time: 1200 },
+          { type: "stand", direction: "up", time: 350 },
+          { type: "stand", direction: "right", time: 1000 },
+        ],
+      }),
+      npc2: new Person({
+        x: withGridOffset(3),
+        y: withGridOffset(7),
+        src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
+        behaviorLoop: [
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "up" },
+          { type: "stand", direction: "up", time: 800 },
+          { type: "walk", direction: "right" },
+          { type: "walk", direction: "down" },
+        ],
       }),
     },
     walls: {

@@ -30,3 +30,8 @@ export function nextPosition(
   }
   return { x, y };
 }
+
+export function emitEvent(name: string, detail: { [key: string]: any }) {
+  const event = new CustomEvent(name, { detail });
+  document.dispatchEvent(event);
+}
