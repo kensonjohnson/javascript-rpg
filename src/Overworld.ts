@@ -1,7 +1,7 @@
 import { DirectionInput } from "./DirectionInput";
-import { GameObject } from "./GameObject";
 import { OverworldMap } from "./OverworldMap";
-import { ValidDirections } from "./Person";
+import type { GameObject } from "./GameObject";
+import type { ValidDirections } from "./Person";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -47,6 +47,7 @@ export class Overworld {
     Object.values(this.map.gameObjects ?? {}).forEach((gameObject) => {
       gameObject.update({
         arrow: this.directionInput!.direction as ValidDirections,
+        map: this.map,
       });
     });
 
@@ -65,6 +66,9 @@ export class Overworld {
   }
 
   init() {
+    // Mount the game objects
+    this.map.mountObjects();
+
     // Start the direction controls
     this.directionInput.init();
 
