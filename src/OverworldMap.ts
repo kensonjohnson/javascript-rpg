@@ -9,7 +9,7 @@ declare global {
         lowerSrc: string;
         upperSrc: string;
         gameObjects: {
-          [key: string]: GameObject | Person;
+          [key: string]: Person;
         };
         walls?: { [key: string]: boolean };
       };
@@ -18,14 +18,14 @@ declare global {
 }
 
 type OverworldMapConfig = {
-  gameObjects: { [key: string]: GameObject | Person };
+  gameObjects: { [key: string]: Person };
   lowerSrc: string;
   upperSrc: string;
   walls?: { [key: string]: boolean };
 };
 
 export class OverworldMap {
-  gameObjects: { [key: string]: GameObject | Person };
+  gameObjects: { [key: string]: Person };
   walls: { [key: string]: boolean };
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
