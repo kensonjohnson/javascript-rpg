@@ -35,7 +35,6 @@ export function nextPosition(
 export function getOppositeDirection(
   direction: "up" | "down" | "left" | "right"
 ): ValidDirection {
-  if (direction === "up") return "down";
   if (direction === "down") return "up";
   if (direction === "left") return "right";
   if (direction === "right") return "left";
