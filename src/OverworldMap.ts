@@ -29,6 +29,8 @@ export class OverworldMap {
   walls: { [key: string]: boolean };
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
+  isCutscenePlaying: boolean;
+
   constructor(config: OverworldMapConfig) {
     this.gameObjects = config.gameObjects;
     this.walls = config.walls ?? {};
@@ -36,6 +38,7 @@ export class OverworldMap {
     this.lowerImage.src = config.lowerSrc;
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
+    this.isCutscenePlaying = false;
   }
 
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
