@@ -6,6 +6,13 @@ export type GameObjectConfig = {
   y: number;
   direction?: "up" | "down" | "left" | "right";
   src?: string;
+  behaviorLoop?: Behavior[];
+};
+
+type Behavior = {
+  type: string;
+  direction: "up" | "down" | "left" | "right";
+  time?: number;
 };
 
 export class GameObject {
@@ -15,6 +22,8 @@ export class GameObject {
   y: number;
   direction: "up" | "down" | "left" | "right";
   sprite: Sprite;
+  behaviorLoop: Behavior[];
+  behaviorLoopIndex: number;
 
   constructor(config: GameObjectConfig) {
     this.id = null;
@@ -28,6 +37,9 @@ export class GameObject {
         config.src ??
         import.meta.env.BASE_URL + "images/characters/people/hero.png",
     });
+
+    this.behaviorLoop = config.behaviorLoop ?? [];
+    this.behaviorLoopIndex = 0;
   }
 
   mount(map: OverworldMap) {
