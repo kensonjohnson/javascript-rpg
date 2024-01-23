@@ -1,7 +1,8 @@
 import { DirectionInput } from "./DirectionInput";
 import { OverworldMap } from "./OverworldMap";
 import type { GameObject } from "./GameObject";
-import type { ValidDirections } from "./Person";
+import type { ValidDirection } from "./Person";
+import { KeyPressListener } from "./KeyPressListener";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -46,7 +47,7 @@ export class Overworld {
 
     Object.values(this.map.gameObjects ?? {}).forEach((gameObject) => {
       gameObject.update({
-        arrow: this.directionInput!.direction as ValidDirections,
+        arrow: this.directionInput!.direction as ValidDirection,
         map: this.map,
       });
     });
@@ -69,9 +70,17 @@ export class Overworld {
     requestAnimationFrame(() => this.gameLoop());
   }
 
+  bindActionInput() {
+    new KeyPressListener("Space", () => {
+      this.map.checkForActionCutscene();
+    });
+  }
+
   init() {
     // Mount the game objects
     this.map.mountObjects();
+
+    this.bindActionInput();
 
     // Start the direction controls
     this.directionInput.init();
@@ -79,15 +88,15 @@ export class Overworld {
     // Start game loop
     this.gameLoop();
 
-    this.map.startCutscene([
-      { target: "hero", type: "walk", direction: "down" },
-      { target: "hero", type: "walk", direction: "down" },
-      { target: "npc1", type: "walk", direction: "left" },
-      { target: "npc1", type: "walk", direction: "left" },
-      { target: "npc1", type: "stand", direction: "up", time: 200 },
-      { type: "textMessage", text: "Press SPACE to close this text box!" },
-      { target: "npc1", type: "walk", direction: "right" },
-      { target: "npc1", type: "walk", direction: "right" },
-    ]);
+    // this.map.startCutscene([
+    //   { target: "hero", type: "walk", direction: "down" },
+    //   { target: "hero", type: "walk", direction: "down" },
+    //   { target: "npc1", type: "walk", direction: "left" },
+    //   { target: "npc1", type: "walk", direction: "left" },
+    //   { target: "npc1", type: "stand", direction: "up", time: 200 },
+    //   { type: "textMessage", text: "Press SPACE to close this text box!" },
+    //   { target: "npc1", type: "walk", direction: "right" },
+    //   { target: "npc1", type: "walk", direction: "right" },
+    // ]);
   }
 }
