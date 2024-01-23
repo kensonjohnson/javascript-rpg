@@ -106,6 +106,24 @@ window.OverworldMaps = {
         x: withGridOffset(7),
         y: withGridOffset(9),
         src: import.meta.env.BASE_URL + "images/characters/people/npc1.png",
+        behaviorLoop: [
+          { type: "stand", direction: "up", time: 800 },
+          { type: "stand", direction: "left", time: 1200 },
+          { type: "stand", direction: "up", time: 350 },
+          { type: "stand", direction: "right", time: 1000 },
+        ],
+      }),
+      npc2: new Person({
+        x: withGridOffset(3),
+        y: withGridOffset(7),
+        src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
+        behaviorLoop: [
+          { type: "walk", direction: "left" },
+          { type: "walk", direction: "up" },
+          { type: "stand", direction: "up", time: 800 },
+          { type: "walk", direction: "right" },
+          { type: "walk", direction: "down" },
+        ],
       }),
     },
     walls: {
