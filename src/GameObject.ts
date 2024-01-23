@@ -9,6 +9,7 @@ export type GameObjectConfig = {
 };
 
 export class GameObject {
+  id: string | null;
   isMounted: boolean;
   x: number;
   y: number;
@@ -16,6 +17,7 @@ export class GameObject {
   sprite: Sprite;
 
   constructor(config: GameObjectConfig) {
+    this.id = null;
     this.isMounted = false;
     this.x = config.x ?? 0;
     this.y = config.y ?? 0;
