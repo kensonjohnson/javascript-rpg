@@ -84,7 +84,8 @@ export class Overworld {
       { target: "hero", type: "walk", direction: "down" },
       { target: "npc1", type: "walk", direction: "left" },
       { target: "npc1", type: "walk", direction: "left" },
-      { target: "npc1", type: "stand", direction: "up", time: 1500 },
+      { target: "npc1", type: "stand", direction: "up", time: 200 },
+      { type: "textMessage", text: "Press SPACE to close this text box!" },
       { target: "npc1", type: "walk", direction: "right" },
       { target: "npc1", type: "walk", direction: "right" },
     ]);
