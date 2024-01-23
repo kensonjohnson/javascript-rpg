@@ -1,7 +1,7 @@
 import { Person } from "./Person";
 import { asGridCoord, nextPosition, withGridOffset } from "./utils";
 import type { GameObject } from "./GameObject";
-import { OverworldEvent, type BehaviorEvent } from "./OverworldEvent";
+import { OverworldEvent, type ValidEvent } from "./OverworldEvent";
 
 declare global {
   interface Window {
@@ -77,7 +77,7 @@ export class OverworldMap {
     });
   }
 
-  async startCutscene(events: BehaviorEvent[]) {
+  async startCutscene(events: ValidEvent[]) {
     this.isCutscenePlaying = true;
 
     // Start a loop of async events
