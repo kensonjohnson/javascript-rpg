@@ -1,6 +1,6 @@
-import { GameObject } from "./GameObject";
 import { Person } from "./Person";
-import { asGridPoint } from "./utils";
+import { asGridCoord, nextPosition, withGridOffset } from "./utils";
+import type { GameObject } from "./GameObject";
 
 declare global {
   interface Window {
@@ -11,6 +11,7 @@ declare global {
         gameObjects: {
           [key: string]: GameObject | Person;
         };
+        walls?: { [key: string]: boolean };
       };
     };
   }
@@ -20,14 +21,17 @@ type OverworldMapConfig = {
   gameObjects: { [key: string]: GameObject | Person };
   lowerSrc: string;
   upperSrc: string;
+  walls?: { [key: string]: boolean };
 };
 
 export class OverworldMap {
   gameObjects: { [key: string]: GameObject | Person };
+  walls: { [key: string]: boolean };
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
   constructor(config: OverworldMapConfig) {
     this.gameObjects = config.gameObjects;
+    this.walls = config.walls ?? {};
     this.lowerImage = new Image();
     this.lowerImage.src = config.lowerSrc;
     this.upperImage = new Image();
@@ -37,16 +41,52 @@ export class OverworldMap {
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
     context.drawImage(
       this.lowerImage,
-      asGridPoint(10.5) - cameraPerson.x,
-      asGridPoint(6) - cameraPerson.y
+      withGridOffset(10.5) - cameraPerson.x,
+      withGridOffset(6) - cameraPerson.y
     );
   }
+
   drawUpperImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
     context.drawImage(
       this.upperImage,
-      asGridPoint(10.5) - cameraPerson.x,
-      asGridPoint(6) - cameraPerson.y
+      withGridOffset(10.5) - cameraPerson.x,
+      withGridOffset(6) - cameraPerson.y
     );
+  }
+
+  isSpaceTaken(
+    currentX: number,
+    currentY: number,
+    direction: "up" | "down" | "left" | "right"
+  ) {
+    const { x, y } = nextPosition(currentX, currentY, direction);
+    return this.walls[`${x},${y}`] || false;
+  }
+
+  mountObjects() {
+    Object.values(this.gameObjects).forEach((gameObject) => {
+      // TODO: determine if this object should actually mount
+
+      gameObject.mount(this);
+    });
+  }
+
+  addWall(x: number, y: number) {
+    this.walls[`${x},${y}`] = true;
+  }
+
+  removeWall(x: number, y: number) {
+    delete this.walls[`${x},${y}`];
+  }
+
+  moveWall(
+    currentX: number,
+    currentY: number,
+    direction: "up" | "down" | "left" | "right"
+  ) {
+    this.removeWall(currentX, currentY);
+    const { x, y } = nextPosition(currentX, currentY, direction);
+    this.addWall(x, y);
   }
 }
 
@@ -56,15 +96,21 @@ window.OverworldMaps = {
     upperSrc: import.meta.env.BASE_URL + "images/maps/DemoUpper.png",
     gameObjects: {
       hero: new Person({
-        x: asGridPoint(5),
-        y: asGridPoint(6),
+        x: withGridOffset(5),
+        y: withGridOffset(6),
         isPlayerControlled: true,
       }),
       npc1: new Person({
-        x: asGridPoint(7),
-        y: asGridPoint(9),
+        x: withGridOffset(7),
+        y: withGridOffset(9),
         src: import.meta.env.BASE_URL + "images/characters/people/npc1.png",
       }),
+    },
+    walls: {
+      [asGridCoord(7, 6)]: true,
+      [asGridCoord(8, 6)]: true,
+      [asGridCoord(7, 7)]: true,
+      [asGridCoord(8, 7)]: true,
     },
   },
   Kitchen: {
@@ -72,17 +118,17 @@ window.OverworldMaps = {
     upperSrc: import.meta.env.BASE_URL + "images/maps/KitchenUpper.png",
     gameObjects: {
       hero: new Person({
-        x: asGridPoint(3),
-        y: asGridPoint(5),
+        x: withGridOffset(3),
+        y: withGridOffset(5),
       }),
       npcA: new Person({
-        x: asGridPoint(9),
-        y: asGridPoint(6),
+        x: withGridOffset(9),
+        y: withGridOffset(6),
         src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
       }),
       npcB: new Person({
-        x: asGridPoint(10),
-        y: asGridPoint(8),
+        x: withGridOffset(10),
+        y: withGridOffset(8),
         src: import.meta.env.BASE_URL + "images/characters/people/npc3.png",
       }),
     },

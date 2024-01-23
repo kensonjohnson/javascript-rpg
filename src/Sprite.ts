@@ -1,5 +1,6 @@
-import { GameObject } from "./GameObject";
-import { asGridPoint } from "./utils";
+import { spriteSize } from "./config";
+import { withGridOffset } from "./utils";
+import type { GameObject } from "./GameObject";
 
 type SpriteConfig = {
   src: string;
@@ -112,8 +113,8 @@ export class Sprite {
 
   draw(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
     if (!this.isLoaded) return;
-    const x = this.gameObject.x - 8 + asGridPoint(10.5) - cameraPerson.x;
-    const y = this.gameObject.y - 18 + asGridPoint(6) - cameraPerson.y;
+    const x = this.gameObject.x - 8 + withGridOffset(10.5) - cameraPerson.x;
+    const y = this.gameObject.y - 18 + withGridOffset(6) - cameraPerson.y;
 
     this.isShadowLoaded && context.drawImage(this.shadow, x, y);
 
@@ -121,14 +122,14 @@ export class Sprite {
 
     context.drawImage(
       this.image,
-      frameX * 32,
-      frameY * 32,
-      32,
-      32,
+      frameX * spriteSize,
+      frameY * spriteSize,
+      spriteSize,
+      spriteSize,
       x,
       y,
-      32,
-      32
+      spriteSize,
+      spriteSize
     );
 
     this.updateAnimationProgress();

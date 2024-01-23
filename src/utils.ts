@@ -1,3 +1,32 @@
-export function asGridPoint(point: number) {
-  return point * 16;
+import { gridSize } from "./config";
+
+export function withGridOffset(point: number) {
+  return point * gridSize;
+}
+
+export function asGridCoord(x: number, y: number) {
+  return `${withGridOffset(x)},${withGridOffset(y)}`;
+}
+
+export function nextPosition(
+  currentX: number,
+  currentY: number,
+  direction: "up" | "down" | "left" | "right"
+) {
+  let x = currentX;
+  let y = currentY;
+
+  if (direction === "up") {
+    y -= gridSize;
+  }
+  if (direction === "down") {
+    y += gridSize;
+  }
+  if (direction === "left") {
+    x -= gridSize;
+  }
+  if (direction === "right") {
+    x += gridSize;
+  }
+  return { x, y };
 }

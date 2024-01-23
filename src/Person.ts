@@ -1,5 +1,6 @@
 import { GameObject } from "./GameObject";
 import type { GameObjectConfig } from "./GameObject";
+import type { OverworldMap } from "./OverworldMap";
 
 export type ValidDirections = "up" | "down" | "left" | "right";
 
@@ -27,16 +28,31 @@ export class Person extends GameObject {
     };
   }
 
-  update(state: { arrow: ValidDirections }) {
-    this.updatePosition();
-    this.updateSprite(state);
+  update(state: { arrow: ValidDirections; map: OverworldMap }) {
+    if (this.movingProgressRemaining > 0) {
+      this.updatePosition();
+    } else {
+      // More cases for walk will come here
 
-    if (
-      this.isPlayerControlled &&
-      this.movingProgressRemaining === 0 &&
-      state.arrow
-    ) {
-      this.direction = state.arrow;
+      // Case: We're keyboard ready and have an arrow pressed
+      if (this.isPlayerControlled && state.arrow) {
+        this.startBehavior(state.map, { type: "walk", direction: state.arrow });
+      }
+
+      this.updateSprite();
+    }
+  }
+
+  startBehavior(
+    map: OverworldMap,
+    behavior: { type: string; direction: ValidDirections }
+  ) {
+    this.direction = behavior.direction;
+    if (behavior.type === "walk") {
+      if (map.isSpaceTaken(this.x, this.y, this.direction)) {
+        return;
+      }
+      map.moveWall(this.x, this.y, this.direction);
       this.movingProgressRemaining = 16;
     }
   }
@@ -52,17 +68,11 @@ export class Person extends GameObject {
     }
   }
 
-  updateSprite(state: { arrow: ValidDirections }) {
-    if (
-      this.isPlayerControlled &&
-      this.movingProgressRemaining === 0 &&
-      !state.arrow
-    ) {
-      this.sprite.setAnimation("idle-" + this.direction);
-    }
-
+  updateSprite() {
     if (this.movingProgressRemaining > 0) {
       this.sprite.setAnimation("walk-" + this.direction);
+      return;
     }
+    this.sprite.setAnimation("idle-" + this.direction);
   }
 }
