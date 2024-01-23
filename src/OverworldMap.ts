@@ -39,7 +39,7 @@ export class OverworldMap {
     this.lowerImage.src = config.lowerSrc;
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
-    this.isCutscenePlaying = true;
+    this.isCutscenePlaying = false;
   }
 
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
@@ -95,6 +95,18 @@ export class OverworldMap {
     );
   }
 
+  checkForActionCutscene() {
+    const hero = this.gameObjects["hero"];
+    const coords = nextPosition(hero.x, hero.y, hero.direction);
+    const match = Object.values(this.gameObjects).find((gameObject) => {
+      return gameObject.x === coords.x && gameObject.y === coords.y;
+    });
+
+    if (!this.isCutscenePlaying && match && match.talking) {
+      this.startCutscene(match.talking[0].events);
+    }
+  }
+
   addWall(x: number, y: number) {
     this.walls[`${x},${y}`] = true;
   }
@@ -133,6 +145,15 @@ window.OverworldMaps = {
           { type: "stand", direction: "left", time: 1200 },
           { type: "stand", direction: "up", time: 350 },
           { type: "stand", direction: "right", time: 1000 },
+        ],
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "I'm busy!", faceHero: "npc1" },
+              { type: "textMessage", text: "Go away!" },
+              { target: "hero", type: "walk", direction: "left" },
+            ],
+          },
         ],
       }),
       npc2: new Person({

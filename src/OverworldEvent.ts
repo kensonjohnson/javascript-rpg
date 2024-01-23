@@ -1,6 +1,7 @@
+import { TextMessage } from "./TextMessage";
+import { getOppositeDirection } from "./utils";
 import type { OverworldMap } from "./OverworldMap";
 import type { Person } from "./Person";
-import { TextMessage } from "./TextMessage";
 
 type MovementEvent = {
   target: string;
@@ -12,6 +13,7 @@ type MovementEvent = {
 type TextMessageEvent = {
   type: "textMessage";
   text: string;
+  faceHero?: string;
 };
 
 export type ValidEvent = MovementEvent | TextMessageEvent;
@@ -79,6 +81,14 @@ export class OverworldEvent {
 
   textMessage(resolve: (value: unknown) => void) {
     if (this.event.type !== "textMessage") return;
+
+    if (this.event.faceHero) {
+      const target = this.map.gameObjects[this.event.faceHero] as Person;
+      target.direction = getOppositeDirection(
+        this.map.gameObjects["hero"].direction
+      );
+    }
+
     const message = new TextMessage({
       text: this.event.text,
       onComplete: () => resolve(null),
