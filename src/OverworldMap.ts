@@ -64,9 +64,11 @@ export class OverworldMap {
   }
 
   mountObjects() {
-    Object.values(this.gameObjects).forEach((gameObject) => {
-      // TODO: determine if this object should actually mount
+    Object.keys(this.gameObjects).forEach((key) => {
+      const gameObject = this.gameObjects[key];
+      gameObject.id = key;
 
+      // TODO: determine if this object should actually mount
       gameObject.mount(this);
     });
   }
