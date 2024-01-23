@@ -1,6 +1,6 @@
 import { spriteSize } from "./config";
-import { GameObject } from "./GameObject";
 import { withGridOffset } from "./utils";
+import type { GameObject } from "./GameObject";
 
 type SpriteConfig = {
   src: string;
