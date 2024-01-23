@@ -88,6 +88,11 @@ export class OverworldMap {
     }
 
     this.isCutscenePlaying = false;
+
+    // Reset all game objects idle animations
+    Object.values(this.gameObjects).forEach((gameObject) =>
+      gameObject.doBehaviorEvent(this)
+    );
   }
 
   addWall(x: number, y: number) {
