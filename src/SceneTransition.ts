@@ -1,32 +1,27 @@
 import "@/styles/SceneTransition.css";
 
 export class SceneTransition {
-  element: HTMLDivElement | null;
+  element: HTMLDivElement;
   constructor() {
-    this.element = null;
-  }
-
-  createElement() {
     this.element = document.createElement("div");
     this.element.classList.add("SceneTransition");
   }
 
   fadeOut() {
-    this.element?.classList.add("fade-out");
-    this.element?.addEventListener(
+    this.element.classList.add("fade-out");
+    this.element.addEventListener(
       "animationend",
       () => {
-        this.element?.remove();
+        this.element.remove();
       },
       { once: true }
     );
   }
 
   init(container: HTMLElement, callback: () => void) {
-    this.createElement();
     container.appendChild(this.element as HTMLDivElement);
 
-    this.element?.addEventListener(
+    this.element.addEventListener(
       "animationend",
       () => {
         callback();
