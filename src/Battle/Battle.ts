@@ -3,7 +3,7 @@ import "@styles/Battle.css";
 import HeroImage from "@images/characters/people/hero.png";
 import EnemyImage from "@images/characters/people/npc1.png";
 
-class Battle {
+export class Battle {
   element: HTMLDivElement;
   constructor() {
     this.element = document.createElement("div");
