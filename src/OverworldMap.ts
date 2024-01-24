@@ -13,6 +13,7 @@ declare global {
           [key: string]: Person;
         };
         walls?: { [key: string]: boolean };
+        cutsceneSpaces?: { [key: string]: { events: ValidEvent[] }[] };
       };
     };
   }
@@ -23,6 +24,7 @@ type OverworldMapConfig = {
   lowerSrc: string;
   upperSrc: string;
   walls?: { [key: string]: boolean };
+  cutsceneSpaces?: { [key: string]: { events: ValidEvent[] }[] };
 };
 
 export class OverworldMap {
@@ -31,6 +33,7 @@ export class OverworldMap {
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
   isCutscenePlaying: boolean;
+  cutsceneSpaces: { [key: string]: { events: ValidEvent[] }[] };
 
   constructor(config: OverworldMapConfig) {
     this.gameObjects = config.gameObjects;
@@ -40,6 +43,7 @@ export class OverworldMap {
     this.upperImage = new Image();
     this.upperImage.src = config.upperSrc;
     this.isCutscenePlaying = false;
+    this.cutsceneSpaces = config.cutsceneSpaces ?? {};
   }
 
   drawLowerImage(context: CanvasRenderingContext2D, cameraPerson: GameObject) {
@@ -102,8 +106,16 @@ export class OverworldMap {
       return gameObject.x === coords.x && gameObject.y === coords.y;
     });
 
-    if (!this.isCutscenePlaying && match && match.talking) {
+    if (!this.isCutscenePlaying && match && match.talking.length) {
       this.startCutscene(match.talking[0].events);
+    }
+  }
+
+  checkForFootstepCutscene() {
+    const hero = this.gameObjects["hero"];
+    const match = this.cutsceneSpaces[`${hero.x},${hero.y}`];
+    if (!this.isCutscenePlaying && match) {
+      this.startCutscene(match[0].events);
     }
   }
 
@@ -157,23 +169,72 @@ window.OverworldMaps = {
         ],
       }),
       npc2: new Person({
-        x: withGridOffset(3),
-        y: withGridOffset(7),
+        x: withGridOffset(8),
+        y: withGridOffset(5),
         src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
-        behaviorLoop: [
-          { type: "walk", direction: "left" },
-          { type: "walk", direction: "up" },
-          { type: "stand", direction: "up", time: 800 },
-          { type: "walk", direction: "right" },
-          { type: "walk", direction: "down" },
-        ],
+        // behaviorLoop: [
+        //   { type: "walk", direction: "left" },
+        //   { type: "walk", direction: "up" },
+        //   { type: "stand", direction: "up", time: 800 },
+        //   { type: "walk", direction: "right" },
+        //   { type: "walk", direction: "down" },
+        // ],
       }),
     },
     walls: {
-      [asGridCoord(7, 6)]: true,
-      [asGridCoord(8, 6)]: true,
-      [asGridCoord(7, 7)]: true,
-      [asGridCoord(8, 7)]: true,
+      [asGridCoord(0, 4)]: true, // west wall
+      [asGridCoord(0, 5)]: true, // west wall
+      [asGridCoord(0, 6)]: true, // west wall
+      [asGridCoord(0, 7)]: true, // west wall
+      [asGridCoord(0, 8)]: true, // west wall
+      [asGridCoord(0, 9)]: true, // west wall
+      [asGridCoord(1, 3)]: true, // north wall
+      [asGridCoord(2, 3)]: true, // north wall
+      [asGridCoord(3, 3)]: true, // north wall
+      [asGridCoord(4, 3)]: true, // north wall
+      [asGridCoord(5, 3)]: true, // north wall
+      [asGridCoord(6, 3)]: true, // north wall
+      [asGridCoord(7, 3)]: true, // north wall
+      [asGridCoord(8, 3)]: true, // north wall
+      [asGridCoord(9, 3)]: true, // north wall
+      [asGridCoord(10, 3)]: true, // north wall
+      [asGridCoord(11, 3)]: true, // north wall
+      [asGridCoord(8, 4)]: true, // closet
+      [asGridCoord(6, 4)]: true, // closet
+      [asGridCoord(11, 4)]: true, // east wall
+      [asGridCoord(11, 5)]: true, // east wall
+      [asGridCoord(11, 6)]: true, // east wall
+      [asGridCoord(11, 7)]: true, // east wall
+      [asGridCoord(11, 8)]: true, // east wall
+      [asGridCoord(11, 9)]: true, // east wall
+      [asGridCoord(7, 6)]: true, // table
+      [asGridCoord(8, 6)]: true, // table
+      [asGridCoord(7, 7)]: true, // table
+      [asGridCoord(8, 7)]: true, // table
+      [asGridCoord(1, 10)]: true, // south wall
+      [asGridCoord(2, 10)]: true, // south wall
+      [asGridCoord(3, 10)]: true, // south wall
+      [asGridCoord(4, 10)]: true, // south wall
+      [asGridCoord(6, 10)]: true, // south wall
+      [asGridCoord(7, 10)]: true, // south wall
+      [asGridCoord(8, 10)]: true, // south wall
+      [asGridCoord(9, 10)]: true, // south wall
+      [asGridCoord(10, 10)]: true, // south wall
+    },
+    cutsceneSpaces: {
+      [asGridCoord(7, 4)]: [
+        {
+          events: [
+            { target: "npc2", type: "walk", direction: "left" },
+            { target: "npc2", type: "stand", direction: "up", time: 25 },
+            { type: "textMessage", text: "Hey!" },
+            { type: "textMessage", text: "You're not allowed in there!" },
+            { target: "npc2", type: "walk", direction: "right" },
+            { target: "npc2", type: "stand", direction: "down", time: 1 },
+            { target: "hero", type: "walk", direction: "down" },
+          ],
+        },
+      ],
     },
   },
   Kitchen: {
