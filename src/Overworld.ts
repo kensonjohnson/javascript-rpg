@@ -76,11 +76,21 @@ export class Overworld {
     });
   }
 
+  bindHeroPositionCheck() {
+    document.addEventListener("PersonWalkingComplete", (event) => {
+      // @ts-ignore
+      if (event.detail.targetId === "hero") {
+        this.map.checkForFootstepCutscene();
+      }
+    });
+  }
+
   init() {
     // Mount the game objects
     this.map.mountObjects();
 
     this.bindActionInput();
+    this.bindHeroPositionCheck();
 
     // Start the direction controls
     this.directionInput.init();
