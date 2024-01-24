@@ -1,7 +1,8 @@
+import { Overworld } from "./Overworld";
 import { Person } from "./Person";
 import { asGridCoord, nextPosition, withGridOffset } from "./utils";
-import type { GameObject } from "./GameObject";
 import { OverworldEvent, type ValidEvent } from "./OverworldEvent";
+import type { GameObject } from "./GameObject";
 
 declare global {
   interface Window {
@@ -19,7 +20,7 @@ declare global {
   }
 }
 
-type OverworldMapConfig = {
+export type OverworldMapConfig = {
   gameObjects: { [key: string]: Person };
   lowerSrc: string;
   upperSrc: string;
@@ -28,6 +29,7 @@ type OverworldMapConfig = {
 };
 
 export class OverworldMap {
+  overworld: Overworld | null;
   gameObjects: { [key: string]: Person };
   walls: { [key: string]: boolean };
   lowerImage: HTMLImageElement;
@@ -36,6 +38,7 @@ export class OverworldMap {
   cutsceneSpaces: { [key: string]: { events: ValidEvent[] }[] };
 
   constructor(config: OverworldMapConfig) {
+    this.overworld = null;
     this.gameObjects = config.gameObjects;
     this.walls = config.walls ?? {};
     this.lowerImage = new Image();
@@ -235,6 +238,11 @@ window.OverworldMaps = {
           ],
         },
       ],
+      [asGridCoord(5, 10)]: [
+        {
+          events: [{ type: "changeMap", map: "Kitchen" }],
+        },
+      ],
     },
   },
   Kitchen: {
@@ -242,18 +250,21 @@ window.OverworldMaps = {
     upperSrc: import.meta.env.BASE_URL + "images/maps/KitchenUpper.png",
     gameObjects: {
       hero: new Person({
-        x: withGridOffset(3),
+        isPlayerControlled: true,
+        x: withGridOffset(5),
         y: withGridOffset(5),
       }),
-      npcA: new Person({
-        x: withGridOffset(9),
-        y: withGridOffset(6),
-        src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
-      }),
-      npcB: new Person({
+      npc3: new Person({
         x: withGridOffset(10),
         y: withGridOffset(8),
         src: import.meta.env.BASE_URL + "images/characters/people/npc3.png",
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "You made it!", faceHero: "npc3" },
+            ],
+          },
+        ],
       }),
     },
   },

@@ -1,5 +1,5 @@
 import { DirectionInput } from "./DirectionInput";
-import { OverworldMap } from "./OverworldMap";
+import { OverworldMap, OverworldMapConfig } from "./OverworldMap";
 import type { GameObject } from "./GameObject";
 import type { ValidDirection } from "./Person";
 import { KeyPressListener } from "./KeyPressListener";
@@ -12,9 +12,9 @@ export class Overworld {
   element: HTMLElement;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
-  map: OverworldMap;
+  map: OverworldMap | null;
   directionInput: DirectionInput;
-  cameraPerson: GameObject;
+  cameraPerson: GameObject | null;
   timestamp: number;
   constructor(config: OverworldConfig) {
     this.element = config.element;
@@ -22,8 +22,8 @@ export class Overworld {
       ".game-canvas"
     ) as HTMLCanvasElement;
     this.context = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-    this.map = new OverworldMap(window.OverworldMaps.DemoRoom);
-    this.cameraPerson = this.map.gameObjects.hero;
+    this.map = null;
+    this.cameraPerson = null;
     this.timestamp = 0;
     this.directionInput = new DirectionInput();
   }
@@ -45,34 +45,34 @@ export class Overworld {
     // Clear the canvas
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    Object.values(this.map.gameObjects ?? {}).forEach((gameObject) => {
+    Object.values(this.map!.gameObjects ?? {}).forEach((gameObject) => {
       gameObject.update({
         arrow: this.directionInput!.direction as ValidDirection,
-        map: this.map,
+        map: this.map as OverworldMap,
       });
     });
 
     // Draw lower image
-    this.map.drawLowerImage(this.context, this.cameraPerson);
+    this.map!.drawLowerImage(this.context, this.cameraPerson as GameObject);
 
     // Draw game objects
-    Object.values(this.map.gameObjects ?? {})
+    Object.values(this.map!.gameObjects ?? {})
       .sort((a, b) => {
         return a.y - b.y;
       })
       .forEach((gameObject) => {
-        gameObject.sprite.draw(this.context, this.cameraPerson);
+        gameObject.sprite.draw(this.context, this.cameraPerson as GameObject);
       });
 
     // Draw upper image
-    this.map.drawUpperImage(this.context, this.cameraPerson);
+    this.map!.drawUpperImage(this.context, this.cameraPerson as GameObject);
 
     requestAnimationFrame(() => this.gameLoop());
   }
 
   bindActionInput() {
     new KeyPressListener("Space", () => {
-      this.map.checkForActionCutscene();
+      this.map!.checkForActionCutscene();
     });
   }
 
@@ -80,14 +80,21 @@ export class Overworld {
     document.addEventListener("PersonWalkingComplete", (event) => {
       // @ts-ignore
       if (event.detail.targetId === "hero") {
-        this.map.checkForFootstepCutscene();
+        this.map!.checkForFootstepCutscene();
       }
     });
   }
 
-  init() {
+  startMap(mapConfig: OverworldMapConfig) {
+    this.map = new OverworldMap(mapConfig);
+    this.map.overworld = this;
+    this.cameraPerson = this.map.gameObjects["hero"];
     // Mount the game objects
     this.map.mountObjects();
+  }
+
+  init() {
+    this.startMap(window.OverworldMaps.DemoRoom);
 
     this.bindActionInput();
     this.bindHeroPositionCheck();

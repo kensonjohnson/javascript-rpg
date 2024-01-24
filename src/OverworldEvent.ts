@@ -16,7 +16,12 @@ type TextMessageEvent = {
   faceHero?: string;
 };
 
-export type ValidEvent = MovementEvent | TextMessageEvent;
+type MapChangeEvent = {
+  type: "changeMap";
+  map: string;
+};
+
+export type ValidEvent = MovementEvent | TextMessageEvent | MapChangeEvent;
 
 export class OverworldEvent {
   map: OverworldMap;
@@ -94,6 +99,12 @@ export class OverworldEvent {
       onComplete: () => resolve(null),
     });
     message.init(document.querySelector(".game-container") as HTMLElement);
+  }
+
+  changeMap(resolve: (value: unknown) => void) {
+    if (this.event.type !== "changeMap") return;
+    this.map.overworld!.startMap(window.OverworldMaps[this.event.map]);
+    resolve(null);
   }
 
   init() {
