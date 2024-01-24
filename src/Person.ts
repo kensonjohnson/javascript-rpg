@@ -3,7 +3,7 @@ import type { GameObjectConfig } from "./GameObject";
 import type { OverworldMap } from "./OverworldMap";
 import { emitEvent } from "./utils";
 
-export type ValidDirections = "up" | "down" | "left" | "right";
+export type ValidDirection = "up" | "down" | "left" | "right";
 
 type PersonConfig = GameObjectConfig & {
   isPlayerControlled?: boolean;
@@ -12,7 +12,7 @@ type PersonConfig = GameObjectConfig & {
 export class Person extends GameObject {
   movingProgressRemaining: number;
   isPlayerControlled: boolean;
-  directionUpdate: { [key in ValidDirections]: [string, number] };
+  directionUpdate: { [key in ValidDirection]: [string, number] };
 
   constructor(config: PersonConfig) {
     super(config);
@@ -29,7 +29,7 @@ export class Person extends GameObject {
     };
   }
 
-  update(state: { arrow: ValidDirections; map: OverworldMap }) {
+  update(state: { arrow: ValidDirection; map: OverworldMap }) {
     if (this.movingProgressRemaining > 0) {
       this.updatePosition();
     } else {
@@ -52,7 +52,7 @@ export class Person extends GameObject {
     map: OverworldMap,
     behavior: {
       type: string;
-      direction: ValidDirections;
+      direction: ValidDirection;
       time?: number;
       retry?: boolean;
     }
@@ -75,8 +75,10 @@ export class Person extends GameObject {
     }
 
     if (behavior.type === "stand") {
+      this.isStanding = true;
       setTimeout(() => {
         emitEvent("PersonStandComplete", { targetId: this.id });
+        this.isStanding = false;
       }, behavior.time);
     }
   }

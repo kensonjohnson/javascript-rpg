@@ -1,7 +1,7 @@
 import { Sprite } from "./Sprite";
 import { OverworldEvent } from "./OverworldEvent";
 import type { OverworldMap } from "./OverworldMap";
-import type { BehaviorEvent } from "./OverworldEvent";
+import type { ValidEvent } from "./OverworldEvent";
 
 export type GameObjectConfig = {
   x: number;
@@ -9,6 +9,7 @@ export type GameObjectConfig = {
   direction?: "up" | "down" | "left" | "right";
   src?: string;
   behaviorLoop?: BehaviorConfig[];
+  talking?: [{ events: ValidEvent[] }];
 };
 
 type BehaviorConfig = {
@@ -21,16 +22,19 @@ type BehaviorConfig = {
 export class GameObject {
   id: string | null;
   isMounted: boolean;
+  isStanding: boolean;
   x: number;
   y: number;
   direction: "up" | "down" | "left" | "right";
   sprite: Sprite;
   behaviorLoop: BehaviorConfig[];
   behaviorLoopIndex: number;
+  talking: { events: ValidEvent[] }[];
 
   constructor(config: GameObjectConfig) {
     this.id = null;
     this.isMounted = false;
+    this.isStanding = false;
     this.x = config.x ?? 0;
     this.y = config.y ?? 0;
     this.direction = config.direction ?? "down";
@@ -43,6 +47,8 @@ export class GameObject {
 
     this.behaviorLoop = config.behaviorLoop ?? [];
     this.behaviorLoopIndex = 0;
+
+    this.talking = config.talking ?? [];
   }
 
   mount(map: OverworldMap) {
@@ -59,7 +65,11 @@ export class GameObject {
   async doBehaviorEvent(map: OverworldMap) {
     // Short circuit if global cutscene is running
     // or if we have no behavior loop
-    if (map.isCutscenePlaying || this.behaviorLoop.length === 0) {
+    if (
+      map.isCutscenePlaying ||
+      this.behaviorLoop.length === 0 ||
+      this.isStanding
+    ) {
       return;
     }
 
@@ -70,7 +80,7 @@ export class GameObject {
     // Create the event handler out of next event config
     const eventHandler = new OverworldEvent({
       map,
-      event: eventConfig as BehaviorEvent,
+      event: eventConfig as ValidEvent,
     });
     await eventHandler.init();
 
