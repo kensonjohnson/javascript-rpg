@@ -267,5 +267,54 @@ window.OverworldMaps = {
         ],
       }),
     },
+    walls: {
+      [asGridCoord(0, 4)]: true, // west wall
+      [asGridCoord(0, 8)]: true, // west wall
+      [asGridCoord(1, 3)]: true, // north wall
+      [asGridCoord(2, 3)]: true, // north wall
+      [asGridCoord(3, 3)]: true, // north wall
+      [asGridCoord(4, 3)]: true, // north wall
+      [asGridCoord(5, 3)]: true, // north wall
+      [asGridCoord(6, 3)]: true, // north wall
+      [asGridCoord(7, 3)]: true, // north wall
+      [asGridCoord(8, 3)]: true, // north wall
+      [asGridCoord(9, 3)]: true, // north wall
+      [asGridCoord(10, 3)]: true, // north wall
+      [asGridCoord(11, 4)]: true, // north wall
+      [asGridCoord(12, 4)]: true, // north wall
+      [asGridCoord(13, 5)]: true, // east wall
+      [asGridCoord(13, 6)]: true, // east wall
+      [asGridCoord(13, 7)]: true, // east wall
+      [asGridCoord(13, 8)]: true, // east wall
+      [asGridCoord(13, 9)]: true, // east wall
+      [asGridCoord(3, 10)]: true, // south wall
+      [asGridCoord(4, 10)]: true, // south wall
+      [asGridCoord(6, 10)]: true, // south wall
+      [asGridCoord(7, 10)]: true, // south wall
+      [asGridCoord(8, 10)]: true, // south wall
+      [asGridCoord(11, 10)]: true, // south wall
+      [asGridCoord(12, 10)]: true, // south wall
+      [asGridCoord(6, 7)]: true, // table
+      [asGridCoord(7, 7)]: true, // table
+      [asGridCoord(9, 9)]: true, // table
+      [asGridCoord(10, 9)]: true, // table
+      [asGridCoord(9, 7)]: true, // table
+      [asGridCoord(10, 7)]: true, // table
+      [asGridCoord(1, 5)]: true, // stove
+      [asGridCoord(1, 6)]: true, // stove
+      [asGridCoord(1, 7)]: true, // stove
+      [asGridCoord(1, 9)]: true, // box
+      [asGridCoord(2, 9)]: true, // box
+    },
+    cutsceneSpaces: {
+      [asGridCoord(5, 10)]: [
+        {
+          events: [
+            { type: "textMessage", text: "More to come later!" },
+            { target: "hero", type: "walk", direction: "up" },
+          ],
+        },
+      ],
+    },
   },
 };
