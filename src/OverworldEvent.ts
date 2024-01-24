@@ -2,6 +2,7 @@ import { TextMessage } from "./TextMessage";
 import { getOppositeDirection } from "./utils";
 import type { OverworldMap } from "./OverworldMap";
 import type { Person } from "./Person";
+import { SceneTransition } from "./SceneTransition";
 
 type MovementEvent = {
   target: string;
@@ -102,9 +103,16 @@ export class OverworldEvent {
   }
 
   changeMap(resolve: (value: unknown) => void) {
-    if (this.event.type !== "changeMap") return;
-    this.map.overworld!.startMap(window.OverworldMaps[this.event.map]);
-    resolve(null);
+    const sceneTransition = new SceneTransition();
+    sceneTransition.init(
+      document.querySelector(".game-container") as HTMLElement,
+      () => {
+        if (this.event.type !== "changeMap") return;
+        this.map.overworld!.startMap(window.OverworldMaps[this.event.map]);
+        resolve(null);
+        sceneTransition.fadeOut();
+      }
+    );
   }
 
   init() {
