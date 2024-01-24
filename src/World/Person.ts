@@ -1,7 +1,7 @@
 import { GameObject } from "./GameObject";
 import type { GameObjectConfig } from "./GameObject";
 import type { OverworldMap } from "./OverworldMap";
-import { emitEvent } from "./utils";
+import { emitEvent } from "../utils";
 
 export type ValidDirection = "up" | "down" | "left" | "right";
 

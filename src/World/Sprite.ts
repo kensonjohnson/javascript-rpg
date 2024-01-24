@@ -1,5 +1,5 @@
-import { spriteSize } from "./config";
-import { withGridOffset } from "./utils";
+import { spriteSize } from "./Config";
+import { withGridOffset } from "../utils";
 import type { GameObject } from "./GameObject";
 
 type SpriteConfig = {

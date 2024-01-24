@@ -1,5 +1,5 @@
 import { TextMessage } from "./TextMessage";
-import { getOppositeDirection } from "./utils";
+import { getOppositeDirection } from "../utils";
 import type { OverworldMap } from "./OverworldMap";
 import type { Person } from "./Person";
 import { SceneTransition } from "./SceneTransition";
