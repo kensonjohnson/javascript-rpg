@@ -1,5 +1,5 @@
-import { gridSize } from "./config";
-import { type ValidDirection } from "./Person";
+import { gridSize } from "./World/Config";
+import { type ValidDirection } from "./World/Person";
 
 export function withGridOffset(point: number) {
   return point * gridSize;

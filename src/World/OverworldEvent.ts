@@ -1,8 +1,9 @@
 import { TextMessage } from "./TextMessage";
-import { getOppositeDirection } from "./utils";
+import { getOppositeDirection } from "../utils";
 import type { OverworldMap } from "./OverworldMap";
 import type { Person } from "./Person";
 import { SceneTransition } from "./SceneTransition";
+import { Battle } from "@/Battle/Battle";
 
 type MovementEvent = {
   target: string;
@@ -22,7 +23,15 @@ type MapChangeEvent = {
   map: string;
 };
 
-export type ValidEvent = MovementEvent | TextMessageEvent | MapChangeEvent;
+type BattleEvent = {
+  type: "battle";
+};
+
+export type ValidEvent =
+  | MovementEvent
+  | TextMessageEvent
+  | MapChangeEvent
+  | BattleEvent;
 
 export class OverworldEvent {
   map: OverworldMap;
@@ -113,6 +122,15 @@ export class OverworldEvent {
         sceneTransition.fadeOut();
       }
     );
+  }
+
+  battle(resolve: (value: unknown) => void) {
+    const battle = new Battle({
+      onComeplete: () => {
+        resolve(null);
+      },
+    });
+    battle.init(document.querySelector(".game-container") as HTMLElement);
   }
 
   init() {

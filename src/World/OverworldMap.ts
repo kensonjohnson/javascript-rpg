@@ -1,6 +1,6 @@
 import { Overworld } from "./Overworld";
 import { Person } from "./Person";
-import { asGridCoord, nextPosition, withGridOffset } from "./utils";
+import { asGridCoord, nextPosition, withGridOffset } from "../utils";
 import { OverworldEvent, type ValidEvent } from "./OverworldEvent";
 import type { GameObject } from "./GameObject";
 

@@ -1,4 +1,8 @@
-import { Overworld } from "./Overworld";
+// Load content
+import "@/Content/Pizzas";
+
+// Load world
+import { Overworld } from "./World/Overworld";
 
 // Launch game on page load
 (() => {
