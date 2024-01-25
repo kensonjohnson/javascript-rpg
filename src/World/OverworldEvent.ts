@@ -47,7 +47,7 @@ export class OverworldEvent {
     this.event = event;
   }
 
-  stand(resolve: (value: unknown) => void) {
+  stand(resolve: (value: void | PromiseLike<void>) => void) {
     if (this.event.type !== "stand") return;
     const target = this.map.gameObjects[this.event.target] as Person;
     target.startBehavior(this.map, {
@@ -63,7 +63,7 @@ export class OverworldEvent {
           "PersonStandComplete",
           completeHandler as EventListener
         );
-        resolve(null);
+        resolve();
       }
     };
 
@@ -73,7 +73,7 @@ export class OverworldEvent {
     );
   }
 
-  walk(resolve: (value: unknown) => void) {
+  walk(resolve: (value: void | PromiseLike<void>) => void) {
     if (this.event.type !== "walk") return;
     const target = this.map.gameObjects[this.event.target] as Person;
     target.startBehavior(this.map, {
@@ -90,7 +90,7 @@ export class OverworldEvent {
           "PersonWalkingComplete",
           completeHandler as EventListener
         );
-        resolve(null);
+        resolve();
       }
     };
 
@@ -100,7 +100,7 @@ export class OverworldEvent {
     );
   }
 
-  textMessage(resolve: (value: unknown) => void) {
+  textMessage(resolve: (value: void | PromiseLike<void>) => void) {
     if (this.event.type !== "textMessage") return;
 
     if (this.event.faceHero) {
@@ -112,28 +112,28 @@ export class OverworldEvent {
 
     const message = new TextMessage({
       text: this.event.text,
-      onComplete: () => resolve(null),
+      onComplete: () => resolve(),
     });
     message.init(document.querySelector(".game-container") as HTMLElement);
   }
 
-  changeMap(resolve: (value: unknown) => void) {
+  changeMap(resolve: (value: void | PromiseLike<void>) => void) {
     const sceneTransition = new SceneTransition();
     sceneTransition.init(
       document.querySelector(".game-container") as HTMLElement,
       () => {
         if (this.event.type !== "changeMap") return;
         this.map.overworld!.startMap(window.OverworldMaps[this.event.map]);
-        resolve(null);
+        resolve();
         sceneTransition.fadeOut();
       }
     );
   }
 
-  battle(resolve: (value: unknown) => void) {
+  battle(resolve: (value: void | PromiseLike<void>) => void) {
     const battle = new Battle({
       onComplete: () => {
-        resolve(null);
+        resolve();
       },
     });
     battle.init(document.querySelector(".game-container") as HTMLElement);
