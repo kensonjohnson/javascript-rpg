@@ -23,20 +23,26 @@ type MapChangeEvent = {
   map: string;
 };
 
-type BattleEvent = {
+type BattleStartEvent = {
   type: "battle";
 };
 
-export type ValidEvent =
+export type OverworldEventType =
   | MovementEvent
   | TextMessageEvent
   | MapChangeEvent
-  | BattleEvent;
+  | BattleStartEvent;
 
 export class OverworldEvent {
   map: OverworldMap;
-  event: ValidEvent;
-  constructor({ map, event }: { map: OverworldMap; event: ValidEvent }) {
+  event: OverworldEventType;
+  constructor({
+    map,
+    event,
+  }: {
+    map: OverworldMap;
+    event: OverworldEventType;
+  }) {
     this.map = map;
     this.event = event;
   }
@@ -126,7 +132,7 @@ export class OverworldEvent {
 
   battle(resolve: (value: unknown) => void) {
     const battle = new Battle({
-      onComeplete: () => {
+      onComplete: () => {
         resolve(null);
       },
     });

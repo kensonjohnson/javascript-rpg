@@ -1,7 +1,7 @@
 import { Sprite } from "./Sprite";
 import { OverworldEvent } from "./OverworldEvent";
 import type { OverworldMap } from "./OverworldMap";
-import type { ValidEvent } from "./OverworldEvent";
+import type { OverworldEventType } from "./OverworldEvent";
 
 export type GameObjectConfig = {
   x: number;
@@ -9,7 +9,7 @@ export type GameObjectConfig = {
   direction?: "up" | "down" | "left" | "right";
   src?: string;
   behaviorLoop?: BehaviorConfig[];
-  talking?: [{ events: ValidEvent[] }];
+  talking?: [{ events: OverworldEventType[] }];
 };
 
 type BehaviorConfig = {
@@ -29,7 +29,7 @@ export class GameObject {
   sprite: Sprite;
   behaviorLoop: BehaviorConfig[];
   behaviorLoopIndex: number;
-  talking: { events: ValidEvent[] }[];
+  talking: { events: OverworldEventType[] }[];
 
   constructor(config: GameObjectConfig) {
     this.id = null;
@@ -80,7 +80,7 @@ export class GameObject {
     // Create the event handler out of next event config
     const eventHandler = new OverworldEvent({
       map,
-      event: eventConfig as ValidEvent,
+      event: eventConfig as OverworldEventType,
     });
     await eventHandler.init();
 

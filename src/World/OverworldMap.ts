@@ -1,7 +1,7 @@
 import { Overworld } from "./Overworld";
 import { Person } from "./Person";
 import { asGridCoord, nextPosition, withGridOffset } from "../utils";
-import { OverworldEvent, type ValidEvent } from "./OverworldEvent";
+import { OverworldEvent, type OverworldEventType } from "./OverworldEvent";
 import type { GameObject } from "./GameObject";
 
 declare global {
@@ -14,7 +14,7 @@ declare global {
           [key: string]: Person;
         };
         walls?: { [key: string]: boolean };
-        cutsceneSpaces?: { [key: string]: { events: ValidEvent[] }[] };
+        cutsceneSpaces?: { [key: string]: { events: OverworldEventType[] }[] };
       };
     };
   }
@@ -25,7 +25,7 @@ export type OverworldMapConfig = {
   lowerSrc: string;
   upperSrc: string;
   walls?: { [key: string]: boolean };
-  cutsceneSpaces?: { [key: string]: { events: ValidEvent[] }[] };
+  cutsceneSpaces?: { [key: string]: { events: OverworldEventType[] }[] };
 };
 
 export class OverworldMap {
@@ -35,7 +35,7 @@ export class OverworldMap {
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
   isCutscenePlaying: boolean;
-  cutsceneSpaces: { [key: string]: { events: ValidEvent[] }[] };
+  cutsceneSpaces: { [key: string]: { events: OverworldEventType[] }[] };
 
   constructor(config: OverworldMapConfig) {
     this.overworld = null;
@@ -84,7 +84,7 @@ export class OverworldMap {
     });
   }
 
-  async startCutscene(events: ValidEvent[]) {
+  async startCutscene(events: OverworldEventType[]) {
     this.isCutscenePlaying = true;
 
     // Start a loop of async events
