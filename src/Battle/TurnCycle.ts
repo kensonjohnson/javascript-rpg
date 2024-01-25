@@ -1,10 +1,14 @@
-import type { Battle } from "./Battle";
+import type { Battle } from "@/Battle/Battle";
+import type { BattleEventType } from "@/Battle/BattleEvent";
 
 export class TurnCycle {
   battle: Battle;
-  onNewEvent: () => Promise<void>;
+  onNewEvent: (event: BattleEventType) => Promise<void>;
   currentTeam: "player" | "enemy";
-  constructor({ battle, onNewEvent }) {
+  constructor(
+    battle: Battle,
+    onNewEvent: (event: BattleEventType) => Promise<void>
+  ) {
     this.battle = battle;
     this.onNewEvent = onNewEvent;
     this.currentTeam = "player";
