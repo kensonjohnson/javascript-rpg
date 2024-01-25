@@ -12,6 +12,7 @@ export class Battle {
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string>;
+  turnCycle?: TurnCycle;
   constructor(config: BattleConfig) {
     this.element = document.createElement("div");
     this.combatants = {
@@ -83,17 +84,15 @@ export class Battle {
       combatant.init(this.element);
     });
 
-    this.turnCycle = new TurnCycle({
-      battle: this,
-      onNewEvent: (event) => {
-        return new Promise((resolve) => {
-          const battleEvent = new BattleEvent({
-            event,
-            battle: this,
-          });
-          battleEvent.init(resolve);
+    this.turnCycle = new TurnCycle(this, (event) => {
+      return new Promise((resolve) => {
+        const battleEvent = new BattleEvent({
+          event,
+          battle: this,
         });
-      },
+        battleEvent.init(resolve);
+      });
     });
+    this.turnCycle.init();
   }
 }
