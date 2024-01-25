@@ -1,5 +1,6 @@
 // Load content
-import "@/Content/Pizzas";
+import "@/Content/pizzas";
+import "@/Content/actions";
 
 // Load world
 import { Overworld } from "./World/Overworld";
