@@ -1,12 +1,18 @@
 import "@styles/Battle.css";
 
 import { Combatant } from "./Combatant";
+import { TurnCycle } from "./TurnCycle";
+import { BattleEvent } from "./BattleEvent";
+
+type BattleConfig = {
+  onComplete: () => void;
+};
 
 export class Battle {
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string>;
-  constructor() {
+  constructor(config: BattleConfig) {
     this.element = document.createElement("div");
     this.combatants = {
       player1: new Combatant(
@@ -75,6 +81,19 @@ export class Battle {
       const combatant = this.combatants[key];
       combatant.id = key;
       combatant.init(this.element);
+    });
+
+    this.turnCycle = new TurnCycle({
+      battle: this,
+      onNewEvent: (event) => {
+        return new Promise((resolve) => {
+          const battleEvent = new BattleEvent({
+            event,
+            battle: this,
+          });
+          battleEvent.init(resolve);
+        });
+      },
     });
   }
 }
