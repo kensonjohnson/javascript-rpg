@@ -1,18 +1,32 @@
+import { TextMessage } from "@/World/TextMessage";
 import type { Battle } from "./Battle";
 
+type BattleMessageEvent = {
+  type: "textMessage";
+  text: string;
+};
+
+export type BattleEventType = BattleMessageEvent;
+
 export class BattleEvent {
-  event: { type: "textMessage" };
+  event: { type: "textMessage"; text: string };
   battle: Battle;
-  constructor({ event, battle }) {
+  constructor({ event, battle }: { event: any; battle: Battle }) {
     this.event = event;
     this.battle = battle;
   }
 
-  testMessage(resolve: (value: unknown) => void) {
-    console.log("testMessage works");
+  textMessage(resolve: (value: void | PromiseLike<void>) => void) {
+    const message = new TextMessage({
+      text: this.event.text,
+      onComplete: () => {
+        resolve();
+      },
+    });
+    message.init(this.battle.element);
   }
 
-  init(resolve: (value: unknown) => void) {
+  init(resolve: (value: void | PromiseLike<void>) => void) {
     this[this.event.type](resolve);
   }
 }
