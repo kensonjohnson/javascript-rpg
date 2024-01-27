@@ -1,24 +1,62 @@
 import { TextMessage } from "@/World/TextMessage";
-import type { Battle } from "./Battle";
+import type { Battle } from "@/Battle/Battle";
+import type { Combatant } from "@/Battle/Combatant";
+import { SubmissionMenu } from "@/Battle/SubmissionMenu";
+import { Action } from "@/Content/actions";
+import { wait } from "@/utils";
 
 type BattleMessageEvent = {
   type: "textMessage";
   text: string;
+  caster?: Combatant;
+  target?: Combatant;
+  action?: Action;
 };
 
-export type BattleEventType = BattleMessageEvent;
+type SubmissionMenuEvent = {
+  type: "submissionMenu";
+  caster: Combatant;
+  enemy: Combatant;
+};
+
+type StateChangeEvent = {
+  type: "stateChange";
+  caster: Combatant;
+  target: Combatant;
+  damage?: number;
+};
+
+type AnimationEvent = {
+  type: "animation";
+  animation: "spin";
+  caster: Combatant;
+  target: Combatant;
+};
+
+export type BattleEventType =
+  | BattleMessageEvent
+  | SubmissionMenuEvent
+  | StateChangeEvent
+  | AnimationEvent;
 
 export class BattleEvent {
-  event: { type: "textMessage"; text: string };
+  event: BattleEventType;
   battle: Battle;
-  constructor({ event, battle }: { event: any; battle: Battle }) {
+  constructor({ event, battle }: { event: BattleEventType; battle: Battle }) {
     this.event = event;
     this.battle = battle;
   }
 
-  textMessage(resolve: (value: void | PromiseLike<void>) => void) {
+  textMessage(resolve: (value: void) => void) {
+    if (this.event.type !== "textMessage") return;
+
+    const text = this.event.text
+      .replace("{CASTER}", this.event.caster?.name as string)
+      .replace("{ACTION}", this.event.action?.name as string)
+      .replace("{TARGET}", this.event.target?.name as string);
+
     const message = new TextMessage({
-      text: this.event.text,
+      text: text,
       onComplete: () => {
         resolve();
       },
@@ -26,7 +64,56 @@ export class BattleEvent {
     message.init(this.battle.element);
   }
 
-  init(resolve: (value: void | PromiseLike<void>) => void) {
+  async stateChange(resolve: (value: void) => void) {
+    if (this.event.type !== "stateChange") return;
+    const { target, damage } = this.event;
+    if (damage) {
+      target.update({ hp: target.hp - damage });
+      target.pizzaElement.classList.add("battle-damage-blink");
+    }
+
+    await wait(600);
+
+    target.pizzaElement.classList.remove("battle-damage-blink");
+
+    resolve();
+  }
+
+  submissionMenu(
+    resolve: (value: { action: Action; target: Combatant }) => {
+      action: Action;
+      target: Combatant;
+    }
+  ) {
+    if (this.event.type !== "submissionMenu") return;
+    const menu = new SubmissionMenu({
+      caster: this.event.caster,
+      enemy: this.event.enemy,
+      onComplete: (submission) => {
+        resolve(submission);
+      },
+    });
+    menu.init(this.battle.element);
+  }
+
+  animation(resolve: (value: void) => void) {
+    if (this.event.type !== "animation") return;
+    const fn = window.BattleAnimations[this.event.animation];
+    fn(this.event, resolve);
+  }
+
+  init(
+    resolve: (
+      value: void | {
+        action: Action;
+        target: Combatant;
+      }
+    ) => void | {
+      action: Action;
+      target: Combatant;
+    }
+  ) {
+    // @ts-ignore
     this[this.event.type](resolve);
   }
 }

@@ -47,7 +47,7 @@ export class OverworldEvent {
     this.event = event;
   }
 
-  stand(resolve: (value: void | PromiseLike<void>) => void) {
+  stand(resolve: (value: void) => void) {
     if (this.event.type !== "stand") return;
     const target = this.map.gameObjects[this.event.target] as Person;
     target.startBehavior(this.map, {
@@ -73,7 +73,7 @@ export class OverworldEvent {
     );
   }
 
-  walk(resolve: (value: void | PromiseLike<void>) => void) {
+  walk(resolve: (value: void) => void) {
     if (this.event.type !== "walk") return;
     const target = this.map.gameObjects[this.event.target] as Person;
     target.startBehavior(this.map, {
@@ -100,7 +100,7 @@ export class OverworldEvent {
     );
   }
 
-  textMessage(resolve: (value: void | PromiseLike<void>) => void) {
+  textMessage(resolve: (value: void) => void) {
     if (this.event.type !== "textMessage") return;
 
     if (this.event.faceHero) {
@@ -117,7 +117,7 @@ export class OverworldEvent {
     message.init(document.querySelector(".game-container") as HTMLElement);
   }
 
-  changeMap(resolve: (value: void | PromiseLike<void>) => void) {
+  changeMap(resolve: (value: void) => void) {
     const sceneTransition = new SceneTransition();
     sceneTransition.init(
       document.querySelector(".game-container") as HTMLElement,
@@ -130,7 +130,7 @@ export class OverworldEvent {
     );
   }
 
-  battle(resolve: (value: void | PromiseLike<void>) => void) {
+  battle(resolve: (value: void) => void) {
     const battle = new Battle({
       onComplete: () => {
         resolve();

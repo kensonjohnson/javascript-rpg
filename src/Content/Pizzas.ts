@@ -22,6 +22,7 @@ type Pizza = {
   type: "normal" | "spicy" | "veggie" | "fungi" | "chill";
   src: string;
   icon: string;
+  actions: (keyof typeof window.Actions)[];
 };
 
 window.PizzaTypes = {
@@ -38,17 +39,20 @@ window.Pizzas = {
     type: window.PizzaTypes.spicy,
     src: "/images/characters/pizzas/s001.png",
     icon: "/images/icons/spicy.png",
+    actions: ["damage1"],
   },
   v001: {
     name: "Call Me Kale",
     type: window.PizzaTypes.veggie,
     src: "/images/characters/pizzas/v001.png",
     icon: "/images/icons/veggie.png",
+    actions: ["damage1"],
   },
   f001: {
     name: "Portobello Express",
     type: window.PizzaTypes.fungi,
     src: "/images/characters/pizzas/f001.png",
     icon: "/images/icons/fungi.png",
+    actions: ["damage1"],
   },
 };

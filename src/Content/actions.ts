@@ -4,24 +4,31 @@ declare global {
   }
 }
 
+type ActionKey = "damage1";
+
 export type Actions = {
-  [key: string]: Action;
+  [key in ActionKey]: Action;
 };
 
 export type Action = {
   name: string;
   type: "normal";
-  success: { type: "textMessage"; text: string }[];
+  success: {
+    type: "textMessage" | "animation" | "stateChange";
+    text?: string;
+    animation?: string;
+    damage?: number;
+  }[];
 };
 
 window.Actions = {
   damage1: {
-    name: "Whomp!",
+    name: "Whomp",
     type: "normal",
     success: [
-      { type: "textMessage", text: "{CASTER} used Whomp!" },
-      //   { type: "animation", animation: "willBeDefinedHere" },
-      //   { type: "stateChange", damage: 10 },
+      { type: "textMessage", text: "{CASTER} used {ACTION}!" },
+      { type: "animation", animation: "spin" },
+      { type: "stateChange", damage: 10 },
     ],
   },
 };

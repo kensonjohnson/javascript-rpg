@@ -41,6 +41,10 @@ export function getOppositeDirection(
   return "down";
 }
 
+export function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export function emitEvent(name: string, detail: { [key: string]: any }) {
   const event = new CustomEvent(name, { detail });
   document.dispatchEvent(event);
