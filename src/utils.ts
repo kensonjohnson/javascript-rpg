@@ -45,6 +45,10 @@ export function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+export function randomFromArray(array: any[]) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 export function emitEvent(name: string, detail: { [key: string]: any }) {
   const event = new CustomEvent(name, { detail });
   document.dispatchEvent(event);

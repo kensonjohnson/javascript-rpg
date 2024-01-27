@@ -21,7 +21,7 @@ export class Battle {
         {
           ...window.Pizzas.s001,
           team: "player",
-          hp: 50,
+          hp: 30,
           maxHp: 50,
           xp: 0,
           maxXp: 100,
@@ -34,7 +34,7 @@ export class Battle {
         {
           ...window.Pizzas.v001,
           team: "enemy",
-          hp: 50,
+          hp: 30,
           maxHp: 50,
           xp: 20,
           maxXp: 100,
@@ -47,7 +47,7 @@ export class Battle {
         {
           ...window.Pizzas.f001,
           team: "enemy",
-          hp: 50,
+          hp: 45,
           maxHp: 50,
           xp: 30,
           maxXp: 100,
