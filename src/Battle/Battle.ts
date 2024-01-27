@@ -4,12 +4,17 @@ import { Combatant } from "./Combatant";
 import { TurnCycle } from "./TurnCycle";
 import { BattleEvent } from "./BattleEvent";
 
+type BattleConfig = {
+  onComplete: () => void;
+};
+
 export class Battle {
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string>;
   turnCycle?: TurnCycle;
-  constructor() {
+  // @ts-expect-error
+  constructor(config: BattleConfig) {
     this.element = document.createElement("div");
     this.combatants = {
       player1: new Combatant(
