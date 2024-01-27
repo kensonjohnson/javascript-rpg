@@ -37,22 +37,22 @@ window.Pizzas = {
   s001: {
     name: "Slice Samurai",
     type: window.PizzaTypes.spicy,
-    src: import.meta.env.BASE_URL + "/images/characters/pizzas/s001.png",
-    icon: import.meta.env.BASE_URL + "/images/icons/spicy.png",
+    src: import.meta.env.BASE_URL + "images/characters/pizzas/s001.png",
+    icon: import.meta.env.BASE_URL + "images/icons/spicy.png",
     actions: ["damage1"],
   },
   v001: {
     name: "Call Me Kale",
     type: window.PizzaTypes.veggie,
-    src: import.meta.env.BASE_URL + "/images/characters/pizzas/v001.png",
-    icon: import.meta.env.BASE_URL + "/images/icons/veggie.png",
+    src: import.meta.env.BASE_URL + "images/characters/pizzas/v001.png",
+    icon: import.meta.env.BASE_URL + "images/icons/veggie.png",
     actions: ["damage1"],
   },
   f001: {
     name: "Portobello Express",
     type: window.PizzaTypes.fungi,
-    src: import.meta.env.BASE_URL + "/images/characters/pizzas/f001.png",
-    icon: import.meta.env.BASE_URL + "/images/icons/fungi.png",
+    src: import.meta.env.BASE_URL + "images/characters/pizzas/f001.png",
+    icon: import.meta.env.BASE_URL + "images/icons/fungi.png",
     actions: ["damage1"],
   },
 };
