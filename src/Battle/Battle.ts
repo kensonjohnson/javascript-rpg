@@ -21,7 +21,7 @@ export class Battle {
         {
           ...window.Pizzas.s001,
           team: "player",
-          hp: 50,
+          hp: 30,
           maxHp: 50,
           xp: 0,
           maxXp: 100,
@@ -34,7 +34,7 @@ export class Battle {
         {
           ...window.Pizzas.v001,
           team: "enemy",
-          hp: 50,
+          hp: 30,
           maxHp: 50,
           xp: 20,
           maxXp: 100,
@@ -47,7 +47,7 @@ export class Battle {
         {
           ...window.Pizzas.f001,
           team: "enemy",
-          hp: 50,
+          hp: 45,
           maxHp: 50,
           xp: 30,
           maxXp: 100,
@@ -68,12 +68,12 @@ export class Battle {
     this.element.innerHTML = /*html*/ `
         <div class="Battle_hero">
             <img src="${
-              import.meta.env.BASE_URL + "/images/characters/people/hero.png"
+              import.meta.env.BASE_URL + "images/characters/people/hero.png"
             }" alt="Hero Sprite">
         </div>
         <div class="Battle_enemy">
             <img src="${
-              import.meta.env.BASE_URL + "/images/characters/people/npc1.png"
+              import.meta.env.BASE_URL + "images/characters/people/npc1.png"
             }" alt="Enemy Sprite">
         </div>
         `;

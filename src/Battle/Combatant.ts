@@ -1,6 +1,7 @@
 import "@styles/Combatant.css";
 
 import type { Battle } from "./Battle";
+import { randomFromArray } from "@/utils";
 
 type CombatantConfig = {
   name: string;
@@ -14,7 +15,10 @@ type CombatantConfig = {
   maxHp: number;
   xp: number;
   maxXp: number;
-  status?: string;
+  status?: {
+    type: string;
+    expiresIn: number;
+  };
   actions: (keyof typeof window.Actions)[];
 };
 
@@ -36,6 +40,10 @@ export class Combatant {
   hpFills?: NodeListOf<SVGRectElement>;
   xpFills?: NodeListOf<SVGRectElement>;
   actions: (keyof typeof window.Actions)[];
+  status?: {
+    type: string;
+    expiresIn: number;
+  };
 
   constructor(config: CombatantConfig, battle: Battle) {
     this.name = config.name;
@@ -52,6 +60,7 @@ export class Combatant {
     this.hudElement = document.createElement("div");
     this.pizzaElement = document.createElement("img");
     this.actions = config.actions;
+    this.status = config.status;
   }
 
   get hpPercent() {
@@ -117,6 +126,55 @@ export class Combatant {
     // Update the HUD level
     this.hudElement.querySelector(".Combatant_level")!.textContent =
       this.level.toString();
+
+    // Update the HUD status
+    const statusElement = this.hudElement.querySelector(
+      ".Combatant_status"
+    ) as HTMLParagraphElement;
+
+    if (this.status) {
+      statusElement.innerText = this.status.type;
+      statusElement.style.display = "block";
+    } else {
+      statusElement.textContent = "";
+      statusElement.style.display = "none";
+    }
+  }
+
+  getReplacedEvents(originalEvents: any) {
+    if (
+      this.status?.type === "clumsy" &&
+      randomFromArray([true, false, false])
+    ) {
+      return [{ type: "textMessage", text: `${this.name} flopped over!` }];
+    }
+
+    return originalEvents;
+  }
+
+  getPostEvents() {
+    if (this.status?.type === "saucy") {
+      return [
+        { type: "textMessage", text: "The pizza is saucy!" },
+        { type: "stateChange", recover: 5, onCaster: true },
+      ];
+    }
+    return [];
+  }
+
+  decrementStatus() {
+    if (!this.status) return;
+    if (this.status.expiresIn > 0) {
+      this.status.expiresIn -= 1;
+      if (this.status.expiresIn === 0) {
+        const status = this.status.type;
+        this.update({ status: undefined });
+        return {
+          type: "textMessage",
+          text: `${this.name} is no longer ${status}`,
+        };
+      }
+    }
   }
 
   init(container: HTMLElement) {

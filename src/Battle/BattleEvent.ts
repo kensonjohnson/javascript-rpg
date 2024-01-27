@@ -24,6 +24,13 @@ type StateChangeEvent = {
   caster: Combatant;
   target: Combatant;
   damage?: number;
+  recover?: number;
+  status?: {
+    type: string;
+    expiresIn: number;
+  };
+  action: Action;
+  onCaster?: boolean;
 };
 
 type AnimationEvent = {
@@ -31,6 +38,7 @@ type AnimationEvent = {
   animation: "spin";
   caster: Combatant;
   target: Combatant;
+  color?: string;
 };
 
 export type BattleEventType =
@@ -66,10 +74,23 @@ export class BattleEvent {
 
   async stateChange(resolve: (value: void) => void) {
     if (this.event.type !== "stateChange") return;
-    const { target, damage } = this.event;
+    const { caster, target, damage, recover, status, action } = this.event;
+    let who = this.event.onCaster ? caster : target;
+    if (action.targetType === "friendly") {
+      who = caster;
+    }
     if (damage) {
       target.update({ hp: target.hp - damage });
       target.pizzaElement.classList.add("battle-damage-blink");
+    }
+
+    if (recover) {
+      const newHp = who.hp + recover;
+      who.update({ hp: newHp > who.maxHP ? who.maxHP : newHp });
+    }
+
+    if (status) {
+      who.update({ status: { ...status } });
     }
 
     await wait(600);

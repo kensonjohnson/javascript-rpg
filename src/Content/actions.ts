@@ -4,7 +4,7 @@ declare global {
   }
 }
 
-type ActionKey = "damage1";
+type ActionKey = "damage1" | "saucyStatus" | "clumsyStatus";
 
 export type Actions = {
   [key in ActionKey]: Action;
@@ -18,7 +18,14 @@ export type Action = {
     text?: string;
     animation?: string;
     damage?: number;
+    recover?: number;
+    color?: string;
+    status?: {
+      type: string;
+      expiresIn: number;
+    };
   }[];
+  targetType?: "friendly" | "enemy";
 };
 
 window.Actions = {
@@ -29,6 +36,25 @@ window.Actions = {
       { type: "textMessage", text: "{CASTER} used {ACTION}!" },
       { type: "animation", animation: "spin" },
       { type: "stateChange", damage: 10 },
+    ],
+  },
+  saucyStatus: {
+    name: "Tomato Squeeze",
+    targetType: "friendly",
+    type: "normal",
+    success: [
+      { type: "textMessage", text: "{CASTER} used {ACTION}!" },
+      { type: "stateChange", status: { type: "saucy", expiresIn: 3 } },
+    ],
+  },
+  clumsyStatus: {
+    name: "Olive Oil",
+    type: "normal",
+    success: [
+      { type: "textMessage", text: "{CASTER} used {ACTION}!" },
+      { type: "animation", animation: "glob", color: "green" },
+      { type: "stateChange", status: { type: "clumsy", expiresIn: 3 } },
+      { type: "textMessage", text: "{TARGET} is slipping all around!" },
     ],
   },
 };
