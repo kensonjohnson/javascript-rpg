@@ -67,10 +67,14 @@ export class Battle {
     this.element.classList.add("Battle");
     this.element.innerHTML = /*html*/ `
         <div class="Battle_hero">
-            <img src="${"/images/characters/people/hero.png"}" alt="Hero Sprite">
+            <img src="${
+              import.meta.env.BASE_URL + "/images/characters/people/hero.png"
+            }" alt="Hero Sprite">
         </div>
         <div class="Battle_enemy">
-            <img src="${"/images/characters/people/npc1.png"}" alt="Enemy Sprite">
+            <img src="${
+              import.meta.env.BASE_URL + "/images/characters/people/npc1.png"
+            }" alt="Enemy Sprite">
         </div>
         `;
   }
