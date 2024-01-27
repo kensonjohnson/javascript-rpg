@@ -1,5 +1,7 @@
 // Load content
-import "@/Content/Pizzas";
+import "@/Content/pizzas";
+import "@/Content/actions";
+import "@/Battle/BattleAnimations";
 
 // Load world
 import { Overworld } from "./World/Overworld";

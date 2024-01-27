@@ -1,12 +1,20 @@
 import "@styles/Battle.css";
 
 import { Combatant } from "./Combatant";
+import { TurnCycle } from "./TurnCycle";
+import { BattleEvent } from "./BattleEvent";
+
+type BattleConfig = {
+  onComplete: () => void;
+};
 
 export class Battle {
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string>;
-  constructor() {
+  turnCycle?: TurnCycle;
+  // @ts-expect-error
+  constructor(config: BattleConfig) {
     this.element = document.createElement("div");
     this.combatants = {
       player1: new Combatant(
@@ -76,5 +84,20 @@ export class Battle {
       combatant.id = key;
       combatant.init(this.element);
     });
+
+    this.turnCycle = new TurnCycle({
+      battle: this,
+      onNewEvent: (event) => {
+        return new Promise((resolve) => {
+          const battleEvent = new BattleEvent({
+            event,
+            battle: this,
+          });
+          // @ts-ignore
+          battleEvent.init(resolve);
+        });
+      },
+    });
+    this.turnCycle.init();
   }
 }

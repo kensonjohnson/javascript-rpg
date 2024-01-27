@@ -15,6 +15,7 @@ type CombatantConfig = {
   xp: number;
   maxXp: number;
   status?: string;
+  actions: (keyof typeof window.Actions)[];
 };
 
 export class Combatant {
@@ -34,6 +35,7 @@ export class Combatant {
   maxXp: number;
   hpFills?: NodeListOf<SVGRectElement>;
   xpFills?: NodeListOf<SVGRectElement>;
+  actions: (keyof typeof window.Actions)[];
 
   constructor(config: CombatantConfig, battle: Battle) {
     this.name = config.name;
@@ -49,6 +51,7 @@ export class Combatant {
     this.maxXp = config.maxXp;
     this.hudElement = document.createElement("div");
     this.pizzaElement = document.createElement("img");
+    this.actions = config.actions;
   }
 
   get hpPercent() {
