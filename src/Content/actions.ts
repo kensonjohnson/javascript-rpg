@@ -4,15 +4,13 @@ declare global {
   }
 }
 
-type ActionKey = "damage1" | "saucyStatus" | "clumsyStatus";
-
 export type Actions = {
-  [key in ActionKey]: Action;
+  [key: string]: Action;
 };
 
 export type Action = {
   name: string;
-  type: "normal";
+  type?: "normal";
   success: {
     type: "textMessage" | "animation" | "stateChange";
     text?: string;
@@ -59,6 +57,16 @@ window.Actions = {
       { type: "animation", animation: "glob", color: "green" },
       { type: "stateChange", status: { type: "clumsy", expiresIn: 3 } },
       { type: "textMessage", text: "{TARGET} is slipping all around!" },
+    ],
+  },
+  item_recoverStatus: {
+    name: "Heating Lamp",
+    description: "Removes status effects",
+    targetType: "friendly",
+    success: [
+      { type: "textMessage", text: "{CASTER} used a {ACTION}!" },
+      { type: "stateChange", status: undefined },
+      { type: "textMessage", text: "{TARGET} is feeling nice and warm!" },
     ],
   },
 };
