@@ -81,10 +81,10 @@ export class TurnCycle {
   }
 
   async init() {
-    await this.onNewEvent({
-      type: "textMessage",
-      text: "A wild pizza appeared!",
-    });
+    // await this.onNewEvent({
+    //   type: "textMessage",
+    //   text: "A wild pizza appeared!",
+    // });
 
     // Start the first turn
     this.turn();
