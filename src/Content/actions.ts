@@ -25,6 +25,7 @@ export type Action = {
       expiresIn: number;
     };
   }[];
+  description: string;
   targetType?: "friendly" | "enemy";
 };
 
@@ -32,6 +33,7 @@ window.Actions = {
   damage1: {
     name: "Whomp",
     type: "normal",
+    description: "A basic attack",
     success: [
       { type: "textMessage", text: "{CASTER} used {ACTION}!" },
       { type: "animation", animation: "spin" },
@@ -41,6 +43,7 @@ window.Actions = {
   saucyStatus: {
     name: "Tomato Squeeze",
     targetType: "friendly",
+    description: "A heal",
     type: "normal",
     success: [
       { type: "textMessage", text: "{CASTER} used {ACTION}!" },
@@ -50,6 +53,7 @@ window.Actions = {
   clumsyStatus: {
     name: "Olive Oil",
     type: "normal",
+    description: "A debuff",
     success: [
       { type: "textMessage", text: "{CASTER} used {ACTION}!" },
       { type: "animation", animation: "glob", color: "green" },
