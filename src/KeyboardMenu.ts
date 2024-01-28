@@ -11,16 +11,14 @@ type Option = {
 
 export class KeyboardMenu {
   options: Option[];
-  up?: KeyPressListener;
-  down?: KeyPressListener;
+  keyPressListeners: KeyPressListener[];
   prevFocus?: HTMLButtonElement;
   element: HTMLDivElement;
   descriptionElement: HTMLDivElement;
   descriptionElementText?: HTMLParagraphElement;
   constructor() {
     this.options = [];
-    this.up = undefined;
-    this.down = undefined;
+    this.keyPressListeners = [];
     this.prevFocus = undefined;
     this.element = document.createElement("div");
     this.descriptionElement = document.createElement("div");
@@ -78,8 +76,7 @@ export class KeyboardMenu {
     this.element.remove();
     this.descriptionElement.remove();
 
-    this.up?.unbind();
-    this.down?.unbind();
+    this.keyPressListeners.forEach((listener) => listener.unbind());
   }
 
   init(container: HTMLElement) {
@@ -87,7 +84,7 @@ export class KeyboardMenu {
     container.appendChild(this.descriptionElement);
     container.appendChild(this.element);
 
-    this.up = new KeyPressListener("ArrowUp", () => {
+    const up = () => {
       const current = Number(this.prevFocus?.dataset.button);
       const prevButton = (
         Array.from(
@@ -99,9 +96,9 @@ export class KeyboardMenu {
           return Number(button.dataset.button) < current && !button.disabled;
         });
       prevButton?.focus();
-    });
+    };
 
-    this.down = new KeyPressListener("ArrowDown", () => {
+    const down = () => {
       const current = Number(this.prevFocus?.dataset.button);
       const nextButton = (
         Array.from(
@@ -111,6 +108,13 @@ export class KeyboardMenu {
         return Number(button.dataset.button) > current && !button.disabled;
       });
       nextButton?.focus();
-    });
+    };
+
+    this.keyPressListeners.push(
+      new KeyPressListener("ArrowUp", up),
+      new KeyPressListener("ArrowDown", down),
+      new KeyPressListener("KeyW", up),
+      new KeyPressListener("KeyS", down)
+    );
   }
 }
