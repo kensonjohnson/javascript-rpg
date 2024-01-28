@@ -7,18 +7,54 @@ export class SubmissionMenu {
   enemy: Combatant;
   keyboardMenu?: KeyboardMenu;
   onComplete: (value: any) => any;
+  items: {
+    actionId: string;
+    quantity: number;
+    instanceId: string;
+  }[];
+
   constructor({
     caster,
     enemy,
     onComplete,
+    items,
   }: {
     caster: Combatant;
     enemy: Combatant;
     onComplete: (value: any) => any;
+    items: {
+      actionId: string;
+      instanceId: string;
+      team: string;
+    }[];
   }) {
     this.caster = caster;
     this.enemy = enemy;
     this.onComplete = onComplete;
+
+    const quantityMap: {
+      [key: string]: {
+        actionId: string;
+        quantity: number;
+        instanceId: string;
+      };
+    } = {};
+    items.forEach((item) => {
+      if (item.team === caster.team) {
+        const existing = quantityMap[item.actionId];
+
+        if (existing) {
+          existing.quantity++;
+        } else {
+          quantityMap[item.actionId] = {
+            actionId: item.actionId,
+            quantity: 1,
+            instanceId: item.instanceId,
+          };
+        }
+      }
+    });
+    this.items = Object.values(quantityMap);
   }
 
   getPages() {
@@ -66,15 +102,31 @@ export class SubmissionMenu {
         }),
         backOption,
       ],
-      items: [backOption],
+      items: [
+        ...this.items.map((item) => {
+          const action = window.Actions[item.actionId];
+          return {
+            label: action.name,
+            description: action.description,
+            right: () => {
+              return "x" + item.quantity;
+            },
+            handler: () => {
+              this.menuSubmit(action, item.instanceId);
+            },
+          };
+        }),
+        backOption,
+      ],
     };
   }
 
-  menuSubmit(action: any) {
+  menuSubmit(action: any, instanceId?: string) {
     this.keyboardMenu?.end();
     this.onComplete({
       action,
       target: action.targetType === "friendly" ? this.caster : this.enemy,
+      instanceId,
     });
   }
 
