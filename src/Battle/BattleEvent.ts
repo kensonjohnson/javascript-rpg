@@ -90,6 +90,10 @@ export class BattleEvent {
       who.update({ status: { ...status } });
     }
 
+    if (status === null) {
+      who.update({ status: undefined });
+    }
+
     await wait(600);
 
     target.pizzaElement.classList.remove("battle-damage-blink");
@@ -110,6 +114,7 @@ export class BattleEvent {
       onComplete: (submission) => {
         resolve(submission);
       },
+      items: this.battle.items,
     });
     menu.init(this.battle.element);
   }

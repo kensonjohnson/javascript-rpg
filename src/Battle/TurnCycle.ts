@@ -8,6 +8,7 @@ export class TurnCycle {
   onNewEvent: (event: BattleEventType) => Promise<{
     action: Action;
     target: Combatant;
+    instanceId?: string;
   }>; // TODO: remove any
   currentTeam: "player" | "enemy";
 
@@ -41,6 +42,12 @@ export class TurnCycle {
       caster,
       enemy,
     });
+
+    if (submission.instanceId) {
+      this.battle.items = this.battle.items.filter(
+        (item) => item.instanceId !== submission.instanceId
+      );
+    }
 
     const resultingEvents = caster.getReplacedEvents(submission.action.success);
     for (const resultingEvent of resultingEvents) {
