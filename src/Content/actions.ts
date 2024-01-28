@@ -18,7 +18,7 @@ export type Action = {
     damage?: number;
     recover?: number;
     color?: string;
-    status?: {
+    status?: null | {
       type: string;
       expiresIn: number;
     };
@@ -65,8 +65,18 @@ window.Actions = {
     targetType: "friendly",
     success: [
       { type: "textMessage", text: "{CASTER} used a {ACTION}!" },
-      { type: "stateChange", status: undefined },
+      { type: "stateChange", status: null },
       { type: "textMessage", text: "{TARGET} is feeling nice and warm!" },
+    ],
+  },
+  item_recoverHp: {
+    name: "Parmesan",
+    description: "Heals 10 HP",
+    targetType: "friendly",
+    success: [
+      { type: "textMessage", text: "{CASTER} sprinkles on some {ACTION}!" },
+      { type: "stateChange", recover: 10 },
+      { type: "textMessage", text: "{TARGET} recovered HP!" },
     ],
   },
 };
