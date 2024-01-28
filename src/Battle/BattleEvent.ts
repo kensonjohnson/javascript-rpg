@@ -74,11 +74,8 @@ export class BattleEvent {
 
   async stateChange(resolve: (value: void) => void) {
     if (this.event.type !== "stateChange") return;
-    const { caster, target, damage, recover, status, action } = this.event;
+    const { caster, target, damage, recover, status } = this.event;
     let who = this.event.onCaster ? caster : target;
-    if (action.targetType === "friendly") {
-      who = caster;
-    }
     if (damage) {
       target.update({ hp: target.hp - damage });
       target.pizzaElement.classList.add("battle-damage-blink");

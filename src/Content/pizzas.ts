@@ -39,7 +39,7 @@ window.Pizzas = {
     type: window.PizzaTypes.spicy,
     src: import.meta.env.BASE_URL + "images/characters/pizzas/s001.png",
     icon: import.meta.env.BASE_URL + "images/icons/spicy.png",
-    actions: ["clumsyStatus", "damage1"],
+    actions: ["clumsyStatus", "damage1", "saucyStatus"],
   },
   v001: {
     name: "Call Me Kale",

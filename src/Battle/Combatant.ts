@@ -20,6 +20,7 @@ type CombatantConfig = {
     expiresIn: number;
   };
   actions: (keyof typeof window.Actions)[];
+  isPlayerControlled?: boolean;
 };
 
 export class Combatant {
@@ -44,6 +45,7 @@ export class Combatant {
     type: string;
     expiresIn: number;
   };
+  isPlayerControlled?: boolean;
 
   constructor(config: CombatantConfig, battle: Battle) {
     this.name = config.name;
@@ -61,6 +63,7 @@ export class Combatant {
     this.pizzaElement = document.createElement("img");
     this.actions = config.actions;
     this.status = config.status;
+    this.isPlayerControlled = config.isPlayerControlled ?? false;
   }
 
   get hpPercent() {
