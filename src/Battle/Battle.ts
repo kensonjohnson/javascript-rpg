@@ -12,6 +12,11 @@ export class Battle {
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string>;
+  items: {
+    actionId: string;
+    instanceId: string;
+    team: string;
+  }[];
   turnCycle?: TurnCycle;
   // @ts-expect-error
   constructor(config: BattleConfig) {
@@ -62,6 +67,13 @@ export class Battle {
       player: "player1",
       enemy: "enemy1",
     };
+    this.items = [
+      {
+        actionId: "item_recoverStatus",
+        instanceId: "p1",
+        team: "player",
+      },
+    ];
   }
 
   createElement() {
