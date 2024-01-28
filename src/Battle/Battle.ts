@@ -73,6 +73,21 @@ export class Battle {
         instanceId: "p1",
         team: "player",
       },
+      {
+        actionId: "item_recoverStatus",
+        instanceId: "p2",
+        team: "player",
+      },
+      {
+        actionId: "item_recoverStatus",
+        instanceId: "p3",
+        team: "enemy",
+      },
+      {
+        actionId: "item_recoverHp",
+        instanceId: "p4",
+        team: "player",
+      },
     ];
   }
 
