@@ -27,6 +27,7 @@ export class Battle {
           maxXp: 100,
           level: 1,
           status: undefined,
+          isPlayerControlled: true,
         },
         this
       ),
