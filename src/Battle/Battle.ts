@@ -11,7 +11,7 @@ type BattleConfig = {
 export class Battle {
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
-  activeCombatants: Record<string, string>;
+  activeCombatants: Record<string, string | undefined>;
   items: {
     actionId: string;
     instanceId: string;
@@ -27,6 +27,20 @@ export class Battle {
           ...window.Pizzas.s001,
           team: "player",
           hp: 30,
+          maxHp: 50,
+          xp: 0,
+          maxXp: 100,
+          level: 1,
+          status: undefined,
+          isPlayerControlled: true,
+        },
+        this
+      ),
+      player2: new Combatant(
+        {
+          ...window.Pizzas.s002,
+          team: "player",
+          hp: 50,
           maxHp: 50,
           xp: 0,
           maxXp: 100,

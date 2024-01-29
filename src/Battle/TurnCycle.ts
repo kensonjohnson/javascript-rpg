@@ -9,6 +9,7 @@ export class TurnCycle {
     action: Action;
     target: Combatant;
     instanceId?: string;
+    replacement?: Combatant;
   }>; // TODO: remove any
   currentTeam: "player" | "enemy";
 
@@ -29,12 +30,11 @@ export class TurnCycle {
 
   async turn() {
     // Get the active combatant
-    const casterId = this.battle.activeCombatants[this.currentTeam];
+    const casterId = this.battle.activeCombatants[this.currentTeam] as string;
     const caster = this.battle.combatants[casterId];
-    const enemyId =
-      this.battle.activeCombatants[
-        caster.team === "player" ? "enemy" : "player"
-      ];
+    const enemyId = this.battle.activeCombatants[
+      caster.team === "player" ? "enemy" : "player"
+    ] as string;
     const enemy = this.battle.combatants[enemyId];
 
     const submission = await this.onNewEvent({
@@ -47,6 +47,20 @@ export class TurnCycle {
       this.battle.items = this.battle.items.filter(
         (item) => item.instanceId !== submission.instanceId
       );
+    }
+
+    if (submission.replacement) {
+      await this.onNewEvent({
+        type: "replace",
+        replacement: submission.replacement,
+      });
+
+      await this.onNewEvent({
+        type: "textMessage",
+        text: `Go get 'em ${submission.replacement.name}!`,
+      });
+      this.nextTurn();
+      return;
     }
 
     const resultingEvents = caster.getReplacedEvents(submission.action.success);
@@ -82,7 +96,10 @@ export class TurnCycle {
       // @ts-expect-error
       await this.onNewEvent(expiredEvent);
     }
+    this.nextTurn();
+  }
 
+  nextTurn() {
     this.currentTeam = this.currentTeam === "player" ? "enemy" : "player";
     this.turn();
   }

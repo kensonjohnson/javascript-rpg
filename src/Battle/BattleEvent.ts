@@ -41,11 +41,17 @@ type AnimationEvent = {
   color?: string;
 };
 
+type ReplaceEvent = {
+  type: "replace";
+  replacement: Combatant;
+};
+
 export type BattleEventType =
   | BattleMessageEvent
   | SubmissionMenuEvent
   | StateChangeEvent
-  | AnimationEvent;
+  | AnimationEvent
+  | ReplaceEvent;
 
 export class BattleEvent {
   event: BattleEventType;
@@ -108,6 +114,7 @@ export class BattleEvent {
     }
   ) {
     if (this.event.type !== "submissionMenu") return;
+    const { caster } = this.event;
     const menu = new SubmissionMenu({
       caster: this.event.caster,
       enemy: this.event.enemy,
@@ -115,8 +122,37 @@ export class BattleEvent {
         resolve(submission);
       },
       items: this.battle.items,
+      replacements: Object.values(this.battle.combatants).filter(
+        (combatant) => {
+          return (
+            combatant.id !== caster!.id &&
+            combatant.team === caster!.team &&
+            combatant.hp > 0
+          );
+        }
+      ),
     });
     menu.init(this.battle.element);
+  }
+
+  async replace(resolve: (value: void) => void) {
+    if (this.event.type !== "replace") return;
+    const { replacement } = this.event;
+    if (!replacement) return;
+
+    const prevCombatant =
+      this.battle.combatants[
+        this.battle.activeCombatants[replacement.team] as string
+      ];
+    this.battle.activeCombatants[replacement.team] = undefined;
+    prevCombatant.update();
+    await wait(400);
+
+    this.battle.activeCombatants[replacement.team] = replacement.id;
+    replacement.update();
+    await wait(400);
+
+    resolve();
   }
 
   animation(resolve: (value: void) => void) {

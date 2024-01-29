@@ -12,12 +12,14 @@ export class SubmissionMenu {
     quantity: number;
     instanceId: string;
   }[];
+  replacements: Combatant[];
 
   constructor({
     caster,
     enemy,
     onComplete,
     items,
+    replacements,
   }: {
     caster: Combatant;
     enemy: Combatant;
@@ -27,11 +29,12 @@ export class SubmissionMenu {
       instanceId: string;
       team: string;
     }[];
+    replacements: Combatant[];
   }) {
     this.caster = caster;
     this.enemy = enemy;
     this.onComplete = onComplete;
-
+    this.replacements = replacements;
     const quantityMap: {
       [key: string]: {
         actionId: string;
@@ -85,7 +88,7 @@ export class SubmissionMenu {
           label: "Swap",
           description: "Swap to another pizza",
           handler: () => {
-            //something
+            this.keyboardMenu?.setOptions(this.getPages().replacements);
           },
         },
       ],
@@ -118,7 +121,27 @@ export class SubmissionMenu {
         }),
         backOption,
       ],
+      replacements: [
+        ...this.replacements.map((replacement) => {
+          return {
+            label: replacement.name,
+            description: replacement.description,
+            handler: () => {
+              this.menuSubmitReplacement(replacement);
+            },
+          };
+        }),
+        backOption,
+      ],
     };
+  }
+
+  menuSubmitReplacement(replacement: Combatant) {
+    this.keyboardMenu?.end();
+
+    this.onComplete({
+      replacement,
+    });
   }
 
   menuSubmit(action: any, instanceId?: string) {

@@ -6,7 +6,7 @@ import { randomFromArray } from "@/utils";
 type CombatantConfig = {
   name: string;
   id?: string;
-  team: string;
+  team: "player" | "enemy";
   src: string;
   icon: string;
   type: "normal" | "spicy" | "veggie" | "fungi" | "chill";
@@ -21,6 +21,7 @@ type CombatantConfig = {
   };
   actions: (keyof typeof window.Actions)[];
   isPlayerControlled?: boolean;
+  description: string;
 };
 
 export class Combatant {
@@ -29,7 +30,7 @@ export class Combatant {
   pizzaElement: HTMLImageElement;
   name: string;
   id?: string;
-  team: string;
+  team: "player" | "enemy";
   src: string;
   icon: string;
   type: string;
@@ -46,6 +47,7 @@ export class Combatant {
     expiresIn: number;
   };
   isPlayerControlled?: boolean;
+  description: string;
 
   constructor(config: CombatantConfig, battle: Battle) {
     this.name = config.name;
@@ -64,6 +66,7 @@ export class Combatant {
     this.actions = config.actions;
     this.status = config.status;
     this.isPlayerControlled = config.isPlayerControlled ?? false;
+    this.description = config.description;
   }
 
   get hpPercent() {
