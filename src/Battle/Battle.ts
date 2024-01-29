@@ -54,7 +54,7 @@ export class Battle {
         {
           ...window.Pizzas.v001,
           team: "enemy",
-          hp: 30,
+          hp: 1,
           maxHp: 50,
           xp: 20,
           maxXp: 100,
