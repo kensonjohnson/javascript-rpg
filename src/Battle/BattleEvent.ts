@@ -4,6 +4,7 @@ import type { Combatant } from "@/Battle/Combatant";
 import { SubmissionMenu } from "@/Battle/SubmissionMenu";
 import { Action } from "@/Content/actions";
 import { wait } from "@/utils";
+import { ReplacementMenu } from "./ReplacementMenu";
 
 type BattleMessageEvent = {
   type: "textMessage";
@@ -46,12 +47,18 @@ type ReplaceEvent = {
   replacement: Combatant;
 };
 
+type ReplacementMenuEvent = {
+  type: "replacementMenu";
+  team: "player" | "enemy";
+};
+
 export type BattleEventType =
   | BattleMessageEvent
   | SubmissionMenuEvent
   | StateChangeEvent
   | AnimationEvent
-  | ReplaceEvent;
+  | ReplaceEvent
+  | ReplacementMenuEvent;
 
 export class BattleEvent {
   event: BattleEventType;
@@ -129,6 +136,22 @@ export class BattleEvent {
             combatant.team === caster!.team &&
             combatant.hp > 0
           );
+        }
+      ),
+    });
+    menu.init(this.battle.element);
+  }
+
+  replacementMenu(resolve: (value: Combatant) => void) {
+    if (this.event.type !== "replacementMenu") return;
+    const team = this.event.team;
+    const menu = new ReplacementMenu({
+      onComplete: (replacement) => {
+        resolve(replacement);
+      },
+      replacements: Object.values(this.battle.combatants).filter(
+        (combatant) => {
+          return combatant.team === team && combatant.hp > 0;
         }
       ),
     });

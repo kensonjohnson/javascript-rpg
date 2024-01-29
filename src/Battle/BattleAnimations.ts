@@ -20,6 +20,7 @@ export type BattleAnimation = (
 
 window.BattleAnimations = {
   async spin(event: BattleEventType, onComplete: () => void): Promise<void> {
+    if (event.type !== "animation") return;
     const element = event.caster!.pizzaElement;
     const animationClassName =
       event.caster!.team === "player"

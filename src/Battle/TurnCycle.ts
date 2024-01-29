@@ -10,6 +10,7 @@ export class TurnCycle {
     target: Combatant;
     instanceId?: string;
     replacement?: Combatant;
+    name?: string;
   }>; // TODO: remove any
   currentTeam: "player" | "enemy";
 
@@ -75,6 +76,46 @@ export class TurnCycle {
       await this.onNewEvent(event);
     }
 
+    // Check if target is dead
+    const targetDead = submission.target.hp <= 0;
+    if (targetDead) {
+      await this.onNewEvent({
+        type: "textMessage",
+        text: `${submission.target.name} is ruined!`,
+      });
+    }
+
+    // Check for winning team
+    const winner = this.getWinningTeam();
+    if (winner) {
+      await this.onNewEvent({
+        type: "textMessage",
+        text: `${winner} wins!`,
+      });
+
+      return;
+    }
+
+    // We have a dead target but we don't have a winning team yet
+    // bring in a new combatant
+    if (targetDead) {
+      const replacement = await this.onNewEvent({
+        type: "replacementMenu",
+        team: submission.target.team,
+      });
+
+      await this.onNewEvent({
+        type: "replace",
+        // @ts-expect-error
+        replacement,
+      });
+
+      await this.onNewEvent({
+        type: "textMessage",
+        text: `${replacement.name} appears!`,
+      });
+    }
+
     // Check for post event actions
     const postEvents = caster.getPostEvents();
     for (const postEvent of postEvents) {
@@ -102,6 +143,18 @@ export class TurnCycle {
   nextTurn() {
     this.currentTeam = this.currentTeam === "player" ? "enemy" : "player";
     this.turn();
+  }
+
+  getWinningTeam() {
+    const aliveTeams: { [key in "player" | "enemy"]?: boolean } = {};
+    Object.values(this.battle.combatants).forEach((combatant) => {
+      if (combatant.hp > 0) {
+        aliveTeams[combatant.team] = true;
+      }
+    });
+    if (!aliveTeams.player) return "enemy";
+    if (!aliveTeams.enemy) return "player";
+    return null;
   }
 
   async init() {
