@@ -3,6 +3,7 @@ import "@styles/Battle.css";
 import { Combatant } from "./Combatant";
 import { TurnCycle } from "./TurnCycle";
 import { BattleEvent } from "./BattleEvent";
+import { Team } from "./Team";
 
 type BattleConfig = {
   onComplete: () => void;
@@ -18,6 +19,8 @@ export class Battle {
     team: string;
   }[];
   turnCycle?: TurnCycle;
+  playerTeam?: Team;
+  enemyTeam?: Team;
   // @ts-expect-error
   constructor(config: BattleConfig) {
     this.element = document.createElement("div");
@@ -125,11 +128,24 @@ export class Battle {
     this.createElement();
     container.appendChild(this.element);
 
+    this.playerTeam = new Team("player", "Hero");
+    this.enemyTeam = new Team("enemy", "Bully");
+
     Object.keys(this.combatants).forEach((key) => {
       const combatant = this.combatants[key];
       combatant.id = key;
       combatant.init(this.element);
+
+      // add to the correct team
+      if (combatant.team === "player") {
+        this.playerTeam?.combatants.push(combatant);
+      } else {
+        this.enemyTeam?.combatants.push(combatant);
+      }
     });
+
+    this.playerTeam.init(this.element);
+    this.enemyTeam.init(this.element);
 
     this.turnCycle = new TurnCycle({
       battle: this,
