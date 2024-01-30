@@ -1,11 +1,8 @@
 # JavaScript RPG
 
-[![Static Badge](https://img.shields.io/badge/HTML5-gray?style=flat-square&logo=html5)
-](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
-[![Static Badge](https://img.shields.io/badge/CSS3-gray?style=flat-square&logo=css3)
-](https://developer.mozilla.org/en-US/docs/Web/CSS)
-[![Static Badge](https://img.shields.io/badge/JavaScript-gray?style=flat-square&logo=javascript)
-](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Static Badge](https://img.shields.io/badge/HTML5-gray?style=flat-square&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
+[![Static Badge](https://img.shields.io/badge/CSS3-gray?style=flat-square&logo=css3)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![Static Badge](https://img.shields.io/badge/JavaScript-gray?style=flat-square&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![TypeScript](https://img.shields.io/badge/TypeScript-gray?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-gray?style=flat-square&logo=vite)](https://vitejs.dev/)
 
