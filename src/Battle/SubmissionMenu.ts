@@ -154,7 +154,11 @@ export class SubmissionMenu {
   }
 
   decide() {
-    this.menuSubmit(window.Actions[this.caster.actions[0]]);
+    this.menuSubmit(
+      window.Actions[
+        this.caster.actions[(Math.random() * this.caster.actions.length) | 0]
+      ]
+    );
   }
 
   showMenu(container: HTMLElement) {
