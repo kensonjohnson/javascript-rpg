@@ -6,7 +6,7 @@ import { randomFromArray } from "@/utils";
 type CombatantConfig = {
   name: string;
   id?: string;
-  team: "player" | "enemy";
+  team?: "player" | "enemy";
   src: string;
   icon: string;
   type: "normal" | "spicy" | "veggie" | "fungi" | "chill";
@@ -25,12 +25,12 @@ type CombatantConfig = {
 };
 
 export class Combatant {
-  battle: Battle;
+  battle: Battle | null;
   hudElement: HTMLDivElement;
   pizzaElement: HTMLImageElement;
   name: string;
   id?: string;
-  team: "player" | "enemy";
+  team?: "player" | "enemy";
   src: string;
   icon: string;
   type: string;
@@ -49,7 +49,8 @@ export class Combatant {
   isPlayerControlled?: boolean;
   description: string;
 
-  constructor(config: CombatantConfig, battle: Battle) {
+  constructor(config: CombatantConfig, battle: Battle | null) {
+    this.id = config.id;
     this.name = config.name;
     this.team = config.team;
     this.battle = battle;
@@ -79,7 +80,8 @@ export class Combatant {
   }
 
   get isActive() {
-    return this.battle.activeCombatants[this.team] === this.id;
+    if (!this.battle) return false;
+    return this.battle.activeCombatants[this.team!] === this.id;
   }
 
   get givesXp() {
@@ -93,17 +95,17 @@ export class Combatant {
     this.hudElement.innerHTML = /*html*/ `
         <p class="Combatant_name">${this.name}</p>
         <p class="Combatant_level"></p>
-        <div>
-            <img class="Combatant_character_crop" src="${this.src}" alt="${this.name}">
+        <div class="Combatant_character_crop">
+            <img class="Combatant_character" src="${this.src}" alt="${this.name}">
         </div>
         <img class="Combatant_type" src="${this.icon}" alt="${this.type}">
-        <svg class="Combatant_life-container" viewBox="0 0 26 2">
-            <rect x="0" y="0" width="0%" height="1" fill="#82ff71" />
-            <rect x="0" y="1" width="0%" height="2" fill="#3ef126" />
+        <svg viewBox="0 0 26 3" class="Combatant_life-container">
+          <rect x=0 y=0 width="0%" height=1 fill="#82ff71" />
+          <rect x=0 y=1 width="0%" height=2 fill="#3ef126" />
         </svg>
-        <svg class="Combatant_xp-container" viewBox="0 0 26 2">
-            <rect x="0" y="0" width="0%" height="1" fill="#ffd76a" />
-            <rect x="0" y="1" width="0%" height="1" fill="#ffc934" />
+        <svg viewBox="0 0 26 2" class="Combatant_xp-container">
+          <rect x=0 y=0 width="0%" height=1 fill="#ffd76a" />
+          <rect x=0 y=1 width="0%" height=1 fill="#ffc934" />
         </svg>
         <p class="Combatant_status"></p>
     `;
@@ -126,16 +128,17 @@ export class Combatant {
     Object.assign(this, changes);
 
     // Show the current active combatants
-    this.hudElement.dataset.active = this.isActive.toString();
-    this.pizzaElement.dataset.active = this.isActive.toString();
+    this.hudElement.dataset.active = `${this.isActive}`;
+    this.pizzaElement.dataset.active = `${this.isActive}`;
 
     // Update the HUD HP and XP bars
     this.hpFills!.forEach((rect) => (rect.style.width = `${this.hpPercent}%`));
     this.xpFills!.forEach((rect) => (rect.style.width = `${this.xpPercent}%`));
 
     // Update the HUD level
-    this.hudElement.querySelector(".Combatant_level")!.textContent =
-      this.level.toString();
+    this.hudElement.querySelector(
+      ".Combatant_level"
+    )!.textContent = `${this.level}`;
 
     // Update the HUD status
     const statusElement = this.hudElement.querySelector(
