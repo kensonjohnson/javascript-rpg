@@ -22,4 +22,4 @@ This game uses HTML5, CSS3, and JavaScript.
 
 4. Run `npm run dev`
 
-5. Open `localhost:3000` in your browser
+5. Open `localhost:5173` in your browser
