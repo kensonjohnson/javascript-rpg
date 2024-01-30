@@ -166,7 +166,8 @@ window.OverworldMaps = {
             events: [
               { type: "textMessage", text: "I'm busy!", faceHero: "npc1" },
               { type: "textMessage", text: "Go away!" },
-              { target: "hero", type: "walk", direction: "left" },
+              // { target: "hero", type: "walk", direction: "left" },
+              { type: "battle", enemyId: "beth" },
             ],
           },
         ],
@@ -174,7 +175,7 @@ window.OverworldMaps = {
       npc2: new Person({
         x: withGridOffset(8),
         y: withGridOffset(5),
-        src: import.meta.env.BASE_URL + "images/characters/people/npc2.png",
+        src: import.meta.env.BASE_URL + "images/characters/people/erio.png",
         // behaviorLoop: [
         //   { type: "walk", direction: "left" },
         //   { type: "walk", direction: "up" },
@@ -182,6 +183,14 @@ window.OverworldMaps = {
         //   { type: "walk", direction: "right" },
         //   { type: "walk", direction: "down" },
         // ],
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "Bahahaha!", faceHero: "npc2" },
+              { type: "battle", enemyId: "erio" },
+            ],
+          },
+        ],
       }),
     },
     walls: {

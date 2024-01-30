@@ -116,6 +116,6 @@ export class Overworld {
     //   { target: "npc1", type: "walk", direction: "right" },
     //   { target: "npc1", type: "walk", direction: "right" },
     // ]);
-    this.map?.startCutscene([{ type: "battle" }]);
+    // this.map?.startCutscene([{ type: "battle", enemyId: "beth" }]);
   }
 }
