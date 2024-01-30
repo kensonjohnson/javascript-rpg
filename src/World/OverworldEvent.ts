@@ -25,6 +25,7 @@ type MapChangeEvent = {
 
 type BattleStartEvent = {
   type: "battle";
+  enemyId: string;
 };
 
 export type OverworldEventType =
@@ -131,7 +132,9 @@ export class OverworldEvent {
   }
 
   battle(resolve: (value: void) => void) {
+    if (this.event.type !== "battle") return;
     const battle = new Battle({
+      enemy: window.Enemies[this.event.enemyId],
       onComplete: () => {
         resolve();
       },

@@ -2,6 +2,8 @@
 import "@/Content/pizzas";
 import "@/Content/actions";
 import "@/Battle/BattleAnimations";
+import "@/Content/enemies";
+import "@/State/PlayerState";
 
 // Load world
 import { Overworld } from "./World/Overworld";
