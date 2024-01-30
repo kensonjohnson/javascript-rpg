@@ -128,7 +128,7 @@ export class TurnCycle {
     if (targetDead) {
       const replacement = await this.onNewEvent({
         type: "replacementMenu",
-        team: submission.target.team,
+        team: submission.target.team!,
       });
 
       await this.onNewEvent({
@@ -176,7 +176,7 @@ export class TurnCycle {
     const aliveTeams: { [key in "player" | "enemy"]?: boolean } = {};
     Object.values(this.battle.combatants).forEach((combatant) => {
       if (combatant.hp > 0) {
-        aliveTeams[combatant.team] = true;
+        aliveTeams[combatant.team!] = true;
       }
     });
     if (!aliveTeams.player) return "enemy";
