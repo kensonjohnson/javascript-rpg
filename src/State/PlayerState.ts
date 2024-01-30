@@ -20,7 +20,7 @@ export interface Status {
 }
 
 export class PlayerState {
-  pizzas: { [key: string]: Pizza };
+  pizzas: Record<string, Pizza>;
   lineup: (keyof this["pizzas"])[];
   inventory: { actionId: string; instanceId: string }[];
   constructor() {
