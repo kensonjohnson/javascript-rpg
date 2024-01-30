@@ -29,7 +29,7 @@ type StateChangeEvent = {
   status?: {
     type: string;
     expiresIn: number;
-  };
+  } | null;
   action: Action;
   onCaster?: boolean;
 };
@@ -52,13 +52,20 @@ type ReplacementMenuEvent = {
   team: "player" | "enemy";
 };
 
+type GiveXpEvent = {
+  type: "giveXp";
+  combatant: Combatant;
+  xp: number;
+};
+
 export type BattleEventType =
   | BattleMessageEvent
   | SubmissionMenuEvent
   | StateChangeEvent
   | AnimationEvent
   | ReplaceEvent
-  | ReplacementMenuEvent;
+  | ReplacementMenuEvent
+  | GiveXpEvent;
 
 export class BattleEvent {
   event: BattleEventType;
@@ -182,6 +189,31 @@ export class BattleEvent {
     this.battle.enemyTeam?.update();
 
     resolve();
+  }
+
+  giveXp(resolve: (value: void) => void) {
+    if (this.event.type !== "giveXp") return;
+    let amount = this.event.xp;
+    const { combatant } = this.event;
+    const step = () => {
+      if (amount > 0) {
+        amount--;
+        combatant.xp++;
+
+        // check if we have leveled up
+        if (combatant.xp === combatant.maxXp) {
+          combatant.xp = 0;
+          combatant.level++;
+          combatant.maxHP = combatant.level * 100;
+        }
+
+        combatant.update();
+        requestAnimationFrame(step);
+        return;
+      }
+      resolve();
+    };
+    requestAnimationFrame(step);
   }
 
   animation(resolve: (value: void) => void) {
