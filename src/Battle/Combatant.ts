@@ -11,14 +11,14 @@ type CombatantConfig = {
   icon: string;
   type: "normal" | "spicy" | "veggie" | "fungi" | "chill";
   level: number;
-  hp: number;
+  hp?: number;
   maxHp: number;
-  xp: number;
+  xp?: number;
   maxXp: number;
   status?: {
     type: string;
     expiresIn: number;
-  };
+  } | null;
   actions: (keyof typeof window.Actions)[];
   isPlayerControlled?: boolean;
   description: string;
@@ -45,7 +45,7 @@ export class Combatant {
   status?: {
     type: string;
     expiresIn: number;
-  };
+  } | null;
   isPlayerControlled?: boolean;
   description: string;
 
@@ -57,9 +57,9 @@ export class Combatant {
     this.icon = config.icon;
     this.type = config.type;
     this.level = config.level;
-    this.hp = config.hp;
+    this.hp = config.hp ?? config.maxHp;
     this.maxHP = config.maxHp;
-    this.xp = config.xp;
+    this.xp = config.xp ?? 0;
     this.maxXp = config.maxXp;
     this.hudElement = document.createElement("div");
     this.pizzaElement = document.createElement("img");
@@ -80,6 +80,10 @@ export class Combatant {
 
   get isActive() {
     return this.battle.activeCombatants[this.team] === this.id;
+  }
+
+  get givesXp() {
+    return this.level * 20;
   }
 
   createElement() {
