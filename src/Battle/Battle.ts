@@ -6,6 +6,7 @@ import { BattleEvent } from "./BattleEvent";
 import { Team } from "./Team";
 import type { Enemy } from "@/Content/enemies";
 import type { Status } from "@/State/PlayerState";
+import { emitEvent } from "@/utils";
 
 type BattleConfig = {
   enemy: Enemy;
@@ -166,6 +167,9 @@ export class Battle {
           playerState.inventory = playerState.inventory.filter(
             (item) => !this.usedInstanceIds[item.instanceId]
           );
+
+          // send signal to update the hud
+          emitEvent("PlayerStateUpdated");
         }
         this.element.remove(); // remove the battle from the DOM
         this.onComplete();

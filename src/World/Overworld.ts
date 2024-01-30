@@ -3,6 +3,7 @@ import { OverworldMap, OverworldMapConfig } from "./OverworldMap";
 import type { GameObject } from "./GameObject";
 import type { ValidDirection } from "./Person";
 import { KeyPressListener } from "./KeyPressListener";
+import { Hud } from "./Hud";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -16,6 +17,8 @@ export class Overworld {
   directionInput: DirectionInput;
   cameraPerson: GameObject | null;
   timestamp: number;
+  hud: Hud;
+
   constructor(config: OverworldConfig) {
     this.element = config.element;
     this.canvas = this.element.querySelector(
@@ -26,6 +29,7 @@ export class Overworld {
     this.cameraPerson = null;
     this.timestamp = 0;
     this.directionInput = new DirectionInput();
+    this.hud = new Hud();
   }
 
   gameLoop() {
@@ -94,6 +98,8 @@ export class Overworld {
   }
 
   init() {
+    this.hud.init(document.querySelector(".game-container")!);
+
     this.startMap(window.OverworldMaps.DemoRoom);
 
     this.bindActionInput();
@@ -116,6 +122,5 @@ export class Overworld {
     //   { target: "npc1", type: "walk", direction: "right" },
     //   { target: "npc1", type: "walk", direction: "right" },
     // ]);
-    // this.map?.startCutscene([{ type: "battle", enemyId: "beth" }]);
   }
 }

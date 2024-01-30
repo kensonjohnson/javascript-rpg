@@ -49,7 +49,7 @@ export function randomFromArray(array: any[]) {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-export function emitEvent(name: string, detail: { [key: string]: any }) {
+export function emitEvent(name: string, detail?: { [key: string]: any }) {
   const event = new CustomEvent(name, { detail });
   document.dispatchEvent(event);
 }

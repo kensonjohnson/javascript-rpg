@@ -171,7 +171,7 @@ export class BattleEvent {
   async replace(resolve: (value: void) => void) {
     if (this.event.type !== "replace") return;
     const { replacement } = this.event;
-    if (!replacement) return;
+    if (!replacement || !replacement.team) return;
 
     const prevCombatant =
       this.battle.combatants[
@@ -204,7 +204,7 @@ export class BattleEvent {
         if (combatant.xp === combatant.maxXp) {
           combatant.xp = 0;
           combatant.level++;
-          combatant.maxHP = combatant.level * 100;
+          combatant.maxXp = combatant.level * 100;
         }
 
         combatant.update();
