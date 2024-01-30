@@ -13,7 +13,6 @@ export class Hud {
   update() {
     this.scoreboards.forEach((scoreboard) => {
       scoreboard.update(window.PlayerState.pizzas[scoreboard.id!]);
-      console.log(window.PlayerState.pizzas[scoreboard.id!]);
     });
   }
 
