@@ -4,6 +4,7 @@ import type { OverworldMap } from "./OverworldMap";
 import type { Person } from "./Person";
 import { SceneTransition } from "./SceneTransition";
 import { Battle } from "@/Battle/Battle";
+import { PauseMenu } from "./PauseMenu";
 
 type MovementEvent = {
   target: string;
@@ -140,6 +141,18 @@ export class OverworldEvent {
       },
     });
     battle.init(document.querySelector(".game-container") as HTMLElement);
+  }
+
+  pause(resolve: (value: void) => void) {
+    this.map.isPaused = true;
+    const menu = new PauseMenu({
+      onComplete: () => {
+        resolve();
+        this.map.isPaused = false;
+        this.map.overworld?.gameLoop();
+      },
+    });
+    menu.init(document.querySelector(".game-container") as HTMLElement);
   }
 
   init() {

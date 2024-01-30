@@ -71,12 +71,20 @@ export class Overworld {
     // Draw upper image
     this.map!.drawUpperImage(this.context, this.cameraPerson as GameObject);
 
-    requestAnimationFrame(() => this.gameLoop());
+    if (!this.map.isPaused) {
+      requestAnimationFrame(() => this.gameLoop());
+    }
   }
 
   bindActionInput() {
     new KeyPressListener("Space", () => {
       this.map!.checkForActionCutscene();
+    });
+
+    new KeyPressListener("Escape", () => {
+      if (!this.map?.isCutscenePlaying) {
+        this.map?.startCutscene([{ type: "pause" }]);
+      }
     });
   }
 
