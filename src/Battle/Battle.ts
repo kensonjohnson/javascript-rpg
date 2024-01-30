@@ -4,12 +4,17 @@ import { Combatant } from "./Combatant";
 import { TurnCycle } from "./TurnCycle";
 import { BattleEvent } from "./BattleEvent";
 import { Team } from "./Team";
+import type { Enemy } from "@/Content/enemies";
+import type { Status } from "@/State/PlayerState";
 
 type BattleConfig = {
+  enemy: Enemy;
   onComplete: () => void;
 };
 
 export class Battle {
+  enemy: Enemy;
+  onComplete: () => void;
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string | undefined>;
@@ -21,91 +26,74 @@ export class Battle {
   turnCycle?: TurnCycle;
   playerTeam?: Team;
   enemyTeam?: Team;
-  // @ts-expect-error
+  usedInstanceIds: Record<string, boolean>;
+
   constructor(config: BattleConfig) {
+    this.enemy = config.enemy;
+    this.onComplete = config.onComplete;
     this.element = document.createElement("div");
-    this.combatants = {
-      player1: new Combatant(
-        {
-          ...window.Pizzas.s001,
-          team: "player",
-          hp: 30,
-          maxHp: 50,
-          xp: 0,
-          maxXp: 100,
-          level: 1,
-          status: undefined,
-          isPlayerControlled: true,
-        },
-        this
-      ),
-      player2: new Combatant(
-        {
-          ...window.Pizzas.s002,
-          team: "player",
-          hp: 50,
-          maxHp: 50,
-          xp: 0,
-          maxXp: 100,
-          level: 1,
-          status: undefined,
-          isPlayerControlled: true,
-        },
-        this
-      ),
-      enemy1: new Combatant(
-        {
-          ...window.Pizzas.v001,
-          team: "enemy",
-          hp: 1,
-          maxHp: 50,
-          xp: 20,
-          maxXp: 100,
-          level: 1,
-          status: undefined,
-        },
-        this
-      ),
-      enemy2: new Combatant(
-        {
-          ...window.Pizzas.f001,
-          team: "enemy",
-          hp: 45,
-          maxHp: 50,
-          xp: 30,
-          maxXp: 100,
-          level: 1,
-          status: undefined,
-        },
-        this
-      ),
-    };
+    this.combatants = {};
     this.activeCombatants = {
-      player: "player1",
-      enemy: "enemy1",
+      player: undefined,
+      enemy: undefined,
     };
-    this.items = [
-      {
-        actionId: "item_recoverStatus",
-        instanceId: "p1",
+
+    // add combatants from player state
+    window.PlayerState.lineup.forEach((pizzaId) => {
+      this.addCombatant(
+        pizzaId.toString(),
+        "player",
+        window.PlayerState.pizzas[pizzaId]
+      );
+    });
+
+    // add combatants from enemy state
+    Object.keys(this.enemy.pizzas).forEach((key) => {
+      const pizza = this.enemy.pizzas[key];
+      this.addCombatant("e_" + key, "enemy", {
+        ...pizza,
+        pizzaId: pizza.pizzaId,
+        maxXp: 100 * pizza.level,
+      });
+    });
+
+    this.items = [];
+
+    window.PlayerState.inventory.forEach((item) => {
+      this.items.push({
+        ...item,
         team: "player",
-      },
+      });
+    });
+
+    this.usedInstanceIds = {};
+  }
+
+  addCombatant(
+    id: string,
+    team: "player" | "enemy",
+    config: {
+      hp?: number;
+      maxHp: number;
+      xp?: number;
+      maxXp: number;
+      level: number;
+      status?: Status | null;
+      pizzaId?: string;
+    }
+  ) {
+    const pizza = window.Pizzas[config.pizzaId as string];
+    this.combatants[id] = new Combatant(
       {
-        actionId: "item_recoverStatus",
-        instanceId: "p2",
-        team: "player",
+        ...pizza,
+        ...config,
+        team,
+        isPlayerControlled: team === "player",
       },
-      {
-        actionId: "item_recoverStatus",
-        instanceId: "p3",
-        team: "enemy",
-      },
-      {
-        actionId: "item_recoverHp",
-        instanceId: "p4",
-        team: "player",
-      },
-    ];
+      this
+    );
+
+    this.activeCombatants[team] = this.activeCombatants[team] || id;
   }
 
   createElement() {
@@ -117,9 +105,10 @@ export class Battle {
             }" alt="Hero Sprite">
         </div>
         <div class="Battle_enemy">
-            <img src="${
-              import.meta.env.BASE_URL + "images/characters/people/npc1.png"
-            }" alt="Enemy Sprite">
+            <img 
+            src="${import.meta.env.BASE_URL + this.enemy.src}" 
+            alt="${this.enemy.name}"
+            >
         </div>
         `;
   }
@@ -158,6 +147,28 @@ export class Battle {
           // @ts-ignore
           battleEvent.init(resolve);
         });
+      },
+      onWinner: (winner) => {
+        if (winner === "player") {
+          const playerState = window.PlayerState;
+          Object.keys(playerState.pizzas).forEach((id) => {
+            const playerStatePizza = playerState.pizzas[id];
+            const combatant = this.combatants[id];
+            if (combatant) {
+              playerStatePizza.hp = combatant.hp;
+              playerStatePizza.xp = combatant.xp;
+              playerStatePizza.maxXp = combatant.maxXp;
+              playerStatePizza.level = combatant.level;
+            }
+          });
+
+          // remove used items from inventory
+          playerState.inventory = playerState.inventory.filter(
+            (item) => !this.usedInstanceIds[item.instanceId]
+          );
+        }
+        this.element.remove(); // remove the battle from the DOM
+        this.onComplete();
       },
     });
     this.turnCycle.init();
