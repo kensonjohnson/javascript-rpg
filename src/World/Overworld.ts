@@ -5,6 +5,7 @@ import type { ValidDirection } from "./Person";
 import { KeyPressListener } from "./KeyPressListener";
 import { Hud } from "./Hud";
 import { Progress } from "@/State/Progress";
+import { TitleScreen } from "./TitleScreen";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -20,6 +21,7 @@ export class Overworld {
   timestamp: number;
   hud: Hud;
   progress: Progress;
+  titleScreen: TitleScreen;
 
   constructor(config: OverworldConfig) {
     this.element = config.element;
@@ -33,6 +35,7 @@ export class Overworld {
     this.directionInput = new DirectionInput();
     this.hud = new Hud();
     this.progress = new Progress();
+    this.titleScreen = new TitleScreen({ progress: this.progress });
   }
 
   gameLoop() {
@@ -125,11 +128,16 @@ export class Overworld {
     this.progress.startingHeroDirection = this.map.gameObjects.hero.direction;
   }
 
-  init() {
+  async init() {
+    const container = document.querySelector(".game-container") as HTMLElement;
+
+    // Show the title screen
+    const useSaveFile = await this.titleScreen.init(container);
+
     // Check for saved data
     let initialHeroState = undefined;
-    const saveFile = this.progress.getSaveFile();
-    if (saveFile) {
+
+    if (useSaveFile) {
       this.progress.load();
       initialHeroState = {
         x: this.progress.startingHeroX,
@@ -139,7 +147,7 @@ export class Overworld {
     }
 
     // Initialize the HUD
-    this.hud.init(document.querySelector(".game-container")!);
+    this.hud.init(container);
 
     // Start the first map
     this.startMap(window.OverworldMaps[this.progress.mapId], initialHeroState);
