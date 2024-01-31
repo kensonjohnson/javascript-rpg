@@ -4,6 +4,7 @@ import type { GameObject } from "./GameObject";
 import type { ValidDirection } from "./Person";
 import { KeyPressListener } from "./KeyPressListener";
 import { Hud } from "./Hud";
+import { Progress } from "@/State/Progress";
 
 type OverworldConfig = {
   element: HTMLElement;
@@ -18,6 +19,7 @@ export class Overworld {
   cameraPerson: GameObject | null;
   timestamp: number;
   hud: Hud;
+  progress: Progress;
 
   constructor(config: OverworldConfig) {
     this.element = config.element;
@@ -30,6 +32,7 @@ export class Overworld {
     this.timestamp = 0;
     this.directionInput = new DirectionInput();
     this.hud = new Hud();
+    this.progress = new Progress();
   }
 
   gameLoop() {
@@ -97,19 +100,51 @@ export class Overworld {
     });
   }
 
-  startMap(mapConfig: OverworldMapConfig) {
+  startMap(
+    mapConfig: OverworldMapConfig,
+    heroInitialState?: { x: number; y: number; direction: ValidDirection }
+  ) {
     this.map = new OverworldMap(mapConfig);
     this.map.overworld = this;
     this.cameraPerson = this.map.gameObjects["hero"];
     // Mount the game objects
     this.map.mountObjects();
+
+    if (heroInitialState) {
+      const { hero } = this.map.gameObjects;
+      this.map.removeWall(hero.x, hero.y);
+      hero.x = heroInitialState.x;
+      hero.y = heroInitialState.y;
+      hero.direction = heroInitialState.direction;
+      this.map.addWall(hero.x, hero.y);
+    }
+
+    this.progress.mapId = mapConfig.id;
+    this.progress.startingHeroX = this.map.gameObjects.hero.x;
+    this.progress.startingHeroY = this.map.gameObjects.hero.y;
+    this.progress.startingHeroDirection = this.map.gameObjects.hero.direction;
   }
 
   init() {
+    // Check for saved data
+    let initialHeroState = undefined;
+    const saveFile = this.progress.getSaveFile();
+    if (saveFile) {
+      this.progress.load();
+      initialHeroState = {
+        x: this.progress.startingHeroX,
+        y: this.progress.startingHeroY,
+        direction: this.progress.startingHeroDirection as ValidDirection,
+      };
+    }
+
+    // Initialize the HUD
     this.hud.init(document.querySelector(".game-container")!);
 
-    this.startMap(window.OverworldMaps.DemoRoom);
+    // Start the first map
+    this.startMap(window.OverworldMaps[this.progress.mapId], initialHeroState);
 
+    // Create controls
     this.bindActionInput();
     this.bindHeroPositionCheck();
 
@@ -119,17 +154,17 @@ export class Overworld {
     // Start game loop
     this.gameLoop();
 
-    this.map!.startCutscene([
-      { target: "npc1", type: "walk", direction: "left" },
-      { target: "npc1", type: "walk", direction: "left" },
-      { target: "npc1", type: "walk", direction: "up" },
-      { target: "npc1", type: "walk", direction: "up" },
-      { type: "textMessage", text: "Press SPACE to interact and to talk!" },
-      { type: "textMessage", text: "Use the ARROW keys or WASD to follow me!" },
-      { target: "npc1", type: "walk", direction: "down" },
-      { target: "npc1", type: "walk", direction: "down" },
-      { target: "npc1", type: "walk", direction: "right" },
-      { target: "npc1", type: "walk", direction: "right" },
-    ]);
+    // this.map!.startCutscene([
+    //   { target: "npc1", type: "walk", direction: "left" },
+    //   { target: "npc1", type: "walk", direction: "left" },
+    //   { target: "npc1", type: "walk", direction: "up" },
+    //   { target: "npc1", type: "walk", direction: "up" },
+    //   { type: "textMessage", text: "Press SPACE to interact and to talk!" },
+    //   { type: "textMessage", text: "Use the ARROW keys or WASD to follow me!" },
+    //   { target: "npc1", type: "walk", direction: "down" },
+    //   { target: "npc1", type: "walk", direction: "down" },
+    //   { target: "npc1", type: "walk", direction: "right" },
+    //   { target: "npc1", type: "walk", direction: "right" },
+    // ]);
   }
 }
