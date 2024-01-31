@@ -33,12 +33,18 @@ type PauseEvent = {
   type: "pause";
 };
 
+type AddStoryFlagEvent = {
+  type: "addStoryFlag";
+  flag: string;
+};
+
 export type OverworldEventType =
   | MovementEvent
   | TextMessageEvent
   | MapChangeEvent
   | BattleStartEvent
-  | PauseEvent;
+  | PauseEvent
+  | AddStoryFlagEvent;
 
 export class OverworldEvent {
   map: OverworldMap;
@@ -137,12 +143,12 @@ export class OverworldEvent {
     );
   }
 
-  battle(resolve: (value: void) => void) {
+  battle(resolve: (value: string) => void) {
     if (this.event.type !== "battle") return;
     const battle = new Battle({
       enemy: window.Enemies[this.event.enemyId],
-      onComplete: () => {
-        resolve();
+      onComplete: (didWin: boolean) => {
+        resolve(didWin ? "WON_BATTLE" : "LOST_BATTLE");
       },
     });
     battle.init(document.querySelector(".game-container") as HTMLElement);
@@ -158,6 +164,13 @@ export class OverworldEvent {
       },
     });
     menu.init(document.querySelector(".game-container") as HTMLElement);
+  }
+
+  addStoryFlag(resolve: (value: void) => void) {
+    if (this.event.type !== "addStoryFlag") return;
+    window.PlayerState.storyFlags[this.event.flag] = true;
+
+    resolve();
   }
 
   init() {

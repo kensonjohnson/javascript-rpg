@@ -25,6 +25,7 @@ export class PlayerState {
   pizzas: Record<string, Pizza>;
   lineup: (keyof this["pizzas"])[];
   inventory: { actionId: string; instanceId: string }[];
+  storyFlags: Record<string, boolean>;
   constructor() {
     this.pizzas = {
       p1: {
@@ -70,6 +71,7 @@ export class PlayerState {
         instanceId: "item3",
       },
     ];
+    this.storyFlags = {};
   }
 
   swapLineup(oldId: keyof this["pizzas"], incomingId: keyof this["pizzas"]) {

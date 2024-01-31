@@ -9,7 +9,7 @@ export type GameObjectConfig = {
   direction?: "up" | "down" | "left" | "right";
   src?: string;
   behaviorLoop?: BehaviorConfig[];
-  talking?: [{ events: OverworldEventType[] }];
+  talking?: TalkingEvent[];
 };
 
 type BehaviorConfig = {
@@ -17,6 +17,11 @@ type BehaviorConfig = {
   type: "walk" | "stand";
   direction: "up" | "down" | "left" | "right";
   time?: number;
+};
+
+type TalkingEvent = {
+  required?: string[];
+  events: OverworldEventType[];
 };
 
 export class GameObject {
@@ -29,7 +34,7 @@ export class GameObject {
   sprite: Sprite;
   behaviorLoop: BehaviorConfig[];
   behaviorLoopIndex: number;
-  talking: { events: OverworldEventType[] }[];
+  talking: TalkingEvent[];
 
   constructor(config: GameObjectConfig) {
     this.id = null;
