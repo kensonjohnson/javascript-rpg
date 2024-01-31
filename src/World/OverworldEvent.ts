@@ -23,6 +23,9 @@ type TextMessageEvent = {
 type MapChangeEvent = {
   type: "changeMap";
   map: string;
+  x: number;
+  y: number;
+  direction: "up" | "down" | "left" | "right";
 };
 
 type BattleStartEvent = {
@@ -143,7 +146,11 @@ export class OverworldEvent {
       document.querySelector(".game-container") as HTMLElement,
       () => {
         if (this.event.type !== "changeMap") return;
-        this.map.overworld!.startMap(window.OverworldMaps[this.event.map]);
+        this.map.overworld!.startMap(window.OverworldMaps[this.event.map], {
+          x: this.event.x,
+          y: this.event.y,
+          direction: this.event.direction as "up" | "down" | "left" | "right",
+        });
         resolve();
         sceneTransition.fadeOut();
       }
@@ -164,6 +171,7 @@ export class OverworldEvent {
   pause(resolve: (value: void) => void) {
     this.map.isPaused = true;
     const menu = new PauseMenu({
+      progress: this.map.overworld!.progress,
       onComplete: () => {
         resolve();
         this.map.isPaused = false;

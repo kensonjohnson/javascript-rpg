@@ -9,6 +9,7 @@ declare global {
   interface Window {
     OverworldMaps: {
       [key: string]: {
+        id: string;
         lowerSrc: string;
         upperSrc: string;
         gameObjects: Record<string, Person | PizzaStone>;
@@ -20,6 +21,7 @@ declare global {
 }
 
 export type OverworldMapConfig = {
+  id: string;
   gameObjects: Record<string, Person | PizzaStone>;
   lowerSrc: string;
   upperSrc: string;
@@ -152,6 +154,7 @@ export class OverworldMap {
 
 window.OverworldMaps = {
   DemoRoom: {
+    id: "DemoRoom",
     lowerSrc: import.meta.env.BASE_URL + "images/maps/DemoLower.png",
     upperSrc: import.meta.env.BASE_URL + "images/maps/DemoUpper.png",
     gameObjects: {
@@ -275,19 +278,28 @@ window.OverworldMaps = {
       ],
       [asGridCoord(5, 10)]: [
         {
-          events: [{ type: "changeMap", map: "Kitchen" }],
+          events: [
+            {
+              type: "changeMap",
+              map: "Kitchen",
+              x: withGridOffset(5),
+              y: withGridOffset(5),
+              direction: "down",
+            },
+          ],
         },
       ],
     },
   },
   Kitchen: {
+    id: "Kitchen",
     lowerSrc: import.meta.env.BASE_URL + "images/maps/KitchenLower.png",
     upperSrc: import.meta.env.BASE_URL + "images/maps/KitchenUpper.png",
     gameObjects: {
       hero: new Person({
         isPlayerControlled: true,
         x: withGridOffset(5),
-        y: withGridOffset(5),
+        y: withGridOffset(10),
       }),
       npc3: new Person({
         x: withGridOffset(10),
@@ -340,13 +352,46 @@ window.OverworldMaps = {
       [asGridCoord(1, 7)]: true, // stove
       [asGridCoord(1, 9)]: true, // box
       [asGridCoord(2, 9)]: true, // box
+      // [asGridCoord(5, 11)]: true, // exit
     },
     cutsceneSpaces: {
       [asGridCoord(5, 10)]: [
         {
           events: [
-            { type: "textMessage", text: "More to come later!" },
-            { target: "hero", type: "walk", direction: "up" },
+            {
+              type: "changeMap",
+              map: "Street",
+              x: withGridOffset(29),
+              y: withGridOffset(10),
+              direction: "down",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  Street: {
+    id: "Street",
+    lowerSrc: import.meta.env.BASE_URL + "images/maps/StreetLower.png",
+    upperSrc: import.meta.env.BASE_URL + "images/maps/StreetUpper.png",
+    gameObjects: {
+      hero: new Person({
+        isPlayerControlled: true,
+        x: withGridOffset(30),
+        y: withGridOffset(10),
+      }),
+    },
+    cutsceneSpaces: {
+      [asGridCoord(29, 9)]: [
+        {
+          events: [
+            {
+              type: "changeMap",
+              map: "Kitchen",
+              x: withGridOffset(5),
+              y: withGridOffset(9),
+              direction: "up",
+            },
           ],
         },
       ],
