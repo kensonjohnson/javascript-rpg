@@ -29,11 +29,16 @@ type BattleStartEvent = {
   enemyId: string;
 };
 
+type PauseEvent = {
+  type: "pause";
+};
+
 export type OverworldEventType =
   | MovementEvent
   | TextMessageEvent
   | MapChangeEvent
-  | BattleStartEvent;
+  | BattleStartEvent
+  | PauseEvent;
 
 export class OverworldEvent {
   map: OverworldMap;
