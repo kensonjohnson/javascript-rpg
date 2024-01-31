@@ -71,7 +71,7 @@ export class Overworld {
     // Draw upper image
     this.map!.drawUpperImage(this.context, this.cameraPerson as GameObject);
 
-    if (!this.map.isPaused) {
+    if (!this.map?.isPaused) {
       requestAnimationFrame(() => this.gameLoop());
     }
   }
