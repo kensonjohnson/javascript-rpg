@@ -10,9 +10,7 @@ declare global {
       [key: string]: {
         lowerSrc: string;
         upperSrc: string;
-        gameObjects: {
-          [key: string]: Person;
-        };
+        gameObjects: Record<string, Person>;
         walls?: { [key: string]: boolean };
         cutsceneSpaces?: { [key: string]: { events: OverworldEventType[] }[] };
       };
@@ -93,7 +91,10 @@ export class OverworldMap {
     // and await each one
     for (const event of events) {
       const eventHandler = new OverworldEvent({ map: this, event });
-      await eventHandler.init();
+      const result = await eventHandler.init();
+      if (result === "LOST_BATTLE") {
+        break;
+      }
     }
 
     this.isCutscenePlaying = false;
@@ -112,7 +113,12 @@ export class OverworldMap {
     });
 
     if (!this.isCutscenePlaying && match && match.talking.length) {
-      this.startCutscene(match.talking[0].events);
+      const relevantScenario = match.talking.find((scenario) => {
+        return (scenario.required ?? []).every((storyFlag) => {
+          return window.PlayerState.storyFlags[storyFlag];
+        });
+      });
+      relevantScenario && this.startCutscene(relevantScenario.events);
     }
   }
 
@@ -165,11 +171,29 @@ window.OverworldMaps = {
         ],
         talking: [
           {
+            required: ["DEFEATED_BETH"],
             events: [
-              { type: "textMessage", text: "I'm busy!", faceHero: "npc1" },
-              { type: "textMessage", text: "Go away!" },
-              // { target: "hero", type: "walk", direction: "left" },
+              {
+                type: "textMessage",
+                text: "You can press ESC to toggle the pause menu.",
+                faceHero: "npc1",
+              },
+            ],
+          },
+          {
+            events: [
+              {
+                type: "textMessage",
+                text: "Good job, now we can fight!",
+                faceHero: "npc1",
+              },
               { type: "battle", enemyId: "beth" },
+              { type: "addStoryFlag", flag: "DEFEATED_BETH" },
+              { type: "textMessage", text: "You crushed me!" },
+              {
+                type: "textMessage",
+                text: "People might have something different to say after you beat them...",
+              },
             ],
           },
         ],
@@ -178,18 +202,11 @@ window.OverworldMaps = {
         x: withGridOffset(8),
         y: withGridOffset(5),
         src: import.meta.env.BASE_URL + "images/characters/people/erio.png",
-        // behaviorLoop: [
-        //   { type: "walk", direction: "left" },
-        //   { type: "walk", direction: "up" },
-        //   { type: "stand", direction: "up", time: 800 },
-        //   { type: "walk", direction: "right" },
-        //   { type: "walk", direction: "down" },
-        // ],
         talking: [
           {
             events: [
               { type: "textMessage", text: "Bahahaha!", faceHero: "npc2" },
-              { type: "battle", enemyId: "erio" },
+              { type: "addStoryFlag", flag: "TALKED_TO_ERIO" },
             ],
           },
         ],

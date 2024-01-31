@@ -10,12 +10,12 @@ import { emitEvent } from "@/utils";
 
 type BattleConfig = {
   enemy: Enemy;
-  onComplete: () => void;
+  onComplete: (didWin: boolean) => void | string;
 };
 
 export class Battle {
   enemy: Enemy;
-  onComplete: () => void;
+  onComplete: (didWin: boolean) => void | string;
   element: HTMLDivElement;
   combatants: Record<string, Combatant>;
   activeCombatants: Record<string, string | undefined>;
@@ -172,7 +172,7 @@ export class Battle {
           emitEvent("PlayerStateUpdated");
         }
         this.element.remove(); // remove the battle from the DOM
-        this.onComplete();
+        this.onComplete(winner === "player");
       },
     });
     this.turnCycle.init();

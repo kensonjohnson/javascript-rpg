@@ -119,16 +119,17 @@ export class Overworld {
     // Start game loop
     this.gameLoop();
 
-    // this.map!.startCutscene([
-    //   { target: "npc1", type: "walk", direction: "left" },
-    //   { target: "npc1", type: "walk", direction: "left" },
-    //   { target: "npc1", type: "walk", direction: "up" },
-    //   { target: "npc1", type: "walk", direction: "up" },
-    //   { type: "textMessage", text: "Press SPACE to close this text box!" },
-    //   { target: "npc1", type: "walk", direction: "down" },
-    //   { target: "npc1", type: "walk", direction: "down" },
-    //   { target: "npc1", type: "walk", direction: "right" },
-    //   { target: "npc1", type: "walk", direction: "right" },
-    // ]);
+    this.map!.startCutscene([
+      { target: "npc1", type: "walk", direction: "left" },
+      { target: "npc1", type: "walk", direction: "left" },
+      { target: "npc1", type: "walk", direction: "up" },
+      { target: "npc1", type: "walk", direction: "up" },
+      { type: "textMessage", text: "Press SPACE to interact and to talk!" },
+      { type: "textMessage", text: "Use the ARROW keys or WASD to follow me!" },
+      { target: "npc1", type: "walk", direction: "down" },
+      { target: "npc1", type: "walk", direction: "down" },
+      { target: "npc1", type: "walk", direction: "right" },
+      { target: "npc1", type: "walk", direction: "right" },
+    ]);
   }
 }
