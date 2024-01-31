@@ -74,6 +74,25 @@ export class PlayerState {
     this.storyFlags = {};
   }
 
+  addPizza(pizzaId: string) {
+    // TODO: Switch to using uuidv4
+    const newId = `p${Date.now()}` + Math.floor(Math.random() * 99999);
+    this.pizzas[newId] = {
+      pizzaId,
+      hp: 50,
+      maxHp: 50,
+      xp: 0,
+      maxXp: 100,
+      level: 1,
+      status: null,
+    };
+    if (this.lineup.length < 3) {
+      this.lineup.push(newId);
+    }
+    emitEvent("LineupChanged");
+    console.log(this);
+  }
+
   swapLineup(oldId: keyof this["pizzas"], incomingId: keyof this["pizzas"]) {
     const oldIndex = this.lineup.indexOf(oldId);
     this.lineup[oldIndex] = incomingId;
