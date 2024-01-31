@@ -1,3 +1,5 @@
+import { emitEvent } from "@/utils";
+
 declare global {
   interface Window {
     PlayerState: PlayerState;
@@ -43,6 +45,15 @@ export class PlayerState {
         level: 1,
         status: null,
       },
+      p3: {
+        pizzaId: "f001",
+        hp: 50,
+        maxHp: 50,
+        xp: 75,
+        maxXp: 100,
+        level: 1,
+        status: null,
+      },
     };
     this.lineup = ["p1", "p2"];
     this.inventory = [
@@ -59,6 +70,19 @@ export class PlayerState {
         instanceId: "item3",
       },
     ];
+  }
+
+  swapLineup(oldId: keyof this["pizzas"], incomingId: keyof this["pizzas"]) {
+    const oldIndex = this.lineup.indexOf(oldId);
+    this.lineup[oldIndex] = incomingId;
+    emitEvent("LineupChanged");
+  }
+
+  moveToFront(futureFrontId: keyof this["pizzas"]) {
+    this.lineup = this.lineup.filter((id) => id !== futureFrontId);
+    this.lineup.unshift(futureFrontId);
+
+    emitEvent("LineupChanged");
   }
 }
 

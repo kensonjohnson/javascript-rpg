@@ -9,6 +9,10 @@ type Option = {
   right?: () => string;
 };
 
+type KeyboardMenuConfig = {
+  decriptionContainer?: HTMLElement;
+};
+
 export class KeyboardMenu {
   options: Option[];
   keyPressListeners: KeyPressListener[];
@@ -16,12 +20,15 @@ export class KeyboardMenu {
   element: HTMLDivElement;
   descriptionElement: HTMLDivElement;
   descriptionElementText?: HTMLParagraphElement;
-  constructor() {
+  descriptionContainer?: HTMLElement;
+
+  constructor(config?: KeyboardMenuConfig) {
     this.options = [];
     this.keyPressListeners = [];
     this.prevFocus = undefined;
     this.element = document.createElement("div");
     this.descriptionElement = document.createElement("div");
+    this.descriptionContainer = config?.decriptionContainer;
   }
 
   setOptions(options: Option[]) {
@@ -81,7 +88,9 @@ export class KeyboardMenu {
 
   init(container: HTMLElement) {
     this.createElement();
-    container.appendChild(this.descriptionElement);
+    (this.descriptionContainer ?? container).appendChild(
+      this.descriptionElement
+    );
     container.appendChild(this.element);
 
     const up = () => {
