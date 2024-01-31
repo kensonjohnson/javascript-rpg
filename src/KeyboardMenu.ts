@@ -22,13 +22,13 @@ export class KeyboardMenu {
   descriptionElementText?: HTMLParagraphElement;
   descriptionContainer?: HTMLElement;
 
-  constructor(config: KeyboardMenuConfig) {
+  constructor(config?: KeyboardMenuConfig) {
     this.options = [];
     this.keyPressListeners = [];
     this.prevFocus = undefined;
     this.element = document.createElement("div");
     this.descriptionElement = document.createElement("div");
-    this.descriptionContainer = config.decriptionContainer;
+    this.descriptionContainer = config?.decriptionContainer;
   }
 
   setOptions(options: Option[]) {
