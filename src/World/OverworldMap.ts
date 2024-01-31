@@ -2,7 +2,8 @@ import { Overworld } from "./Overworld";
 import { Person } from "./Person";
 import { asGridCoord, nextPosition, withGridOffset } from "../utils";
 import { OverworldEvent, type OverworldEventType } from "./OverworldEvent";
-import type { GameObject } from "./GameObject";
+import { GameObject } from "./GameObject";
+import { PizzaStone } from "./PizzaStone";
 
 declare global {
   interface Window {
@@ -10,8 +11,8 @@ declare global {
       [key: string]: {
         lowerSrc: string;
         upperSrc: string;
-        gameObjects: Record<string, Person>;
-        walls?: { [key: string]: boolean };
+        gameObjects: Record<string, Person | PizzaStone>;
+        walls?: Record<string, boolean>;
         cutsceneSpaces?: { [key: string]: { events: OverworldEventType[] }[] };
       };
     };
@@ -19,17 +20,17 @@ declare global {
 }
 
 export type OverworldMapConfig = {
-  gameObjects: { [key: string]: Person };
+  gameObjects: Record<string, Person | PizzaStone>;
   lowerSrc: string;
   upperSrc: string;
-  walls?: { [key: string]: boolean };
+  walls?: Record<string, boolean>;
   cutsceneSpaces?: { [key: string]: { events: OverworldEventType[] }[] };
 };
 
 export class OverworldMap {
   overworld: Overworld | null;
-  gameObjects: { [key: string]: Person };
-  walls: { [key: string]: boolean };
+  gameObjects: Record<string, Person | PizzaStone>;
+  walls: Record<string, boolean>;
   lowerImage: HTMLImageElement;
   upperImage: HTMLImageElement;
   isCutscenePlaying: boolean;
@@ -210,6 +211,12 @@ window.OverworldMaps = {
             ],
           },
         ],
+      }),
+      pizzaStone: new PizzaStone({
+        x: withGridOffset(2),
+        y: withGridOffset(7),
+        storyFlag: "USED_PIZZA_STONE",
+        pizzas: ["v001", "f001"],
       }),
     },
     walls: {

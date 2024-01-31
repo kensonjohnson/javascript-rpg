@@ -67,6 +67,10 @@ export class GameObject {
     }, 50);
   }
 
+  update(state?: any) {
+    console.log("should be overridden", { state });
+  }
+
   async doBehaviorEvent(map: OverworldMap) {
     // Short circuit if global cutscene is running
     // or if we have no behavior loop

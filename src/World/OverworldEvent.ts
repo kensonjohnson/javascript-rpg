@@ -5,6 +5,7 @@ import type { Person } from "./Person";
 import { SceneTransition } from "./SceneTransition";
 import { Battle } from "@/Battle/Battle";
 import { PauseMenu } from "./PauseMenu";
+import { CraftingMenu } from "./CraftingMenu";
 
 type MovementEvent = {
   target: string;
@@ -38,13 +39,19 @@ type AddStoryFlagEvent = {
   flag: string;
 };
 
+type CraftingMenuEvent = {
+  type: "craftingMenu";
+  pizzas: string[];
+};
+
 export type OverworldEventType =
   | MovementEvent
   | TextMessageEvent
   | MapChangeEvent
   | BattleStartEvent
   | PauseEvent
-  | AddStoryFlagEvent;
+  | AddStoryFlagEvent
+  | CraftingMenuEvent;
 
 export class OverworldEvent {
   map: OverworldMap;
@@ -171,6 +178,17 @@ export class OverworldEvent {
     window.PlayerState.storyFlags[this.event.flag] = true;
 
     resolve();
+  }
+
+  craftingMenu(resolve: (value: void) => void) {
+    if (this.event.type !== "craftingMenu") return;
+    const menu = new CraftingMenu({
+      pizzas: this.event.pizzas,
+      onComplete: () => {
+        resolve();
+      },
+    });
+    menu.init(document.querySelector(".game-container") as HTMLElement);
   }
 
   init() {
