@@ -12,7 +12,7 @@ This repo is for me to follow along with the [Pizza Legends RPG](https://www.coo
 All credit for the game code and assets goes to the awesome devs at [Coop Mode](https://www.coopmode.dev/).
 The only differences between this repo and the tutorial code is that I'm using [Vite](https://vitejs.dev/) and TypeScript.
 
-This game uses HTML5, CSS3, and JavaScript.
+This game uses HTML5, CSS3, and JavaScript. Game progress is saved to local storage in the browser.
 
 ## Playing the Game
 
