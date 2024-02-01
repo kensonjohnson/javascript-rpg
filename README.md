@@ -8,9 +8,23 @@
 
 ## Description
 
-This repo is for me to follow along with the [Pizza Legends RPG](https://www.coopmode.dev/series/pizza-legends-rpg/) tutorial series. All credit for the game code and assets goes to the awesome devs at [Coop Mode](https://www.coopmode.dev/). The only differences between this repo and the tutorial code is that I'm using [Vite](https://vitejs.dev/) and TypeScript.
+This repo is for me to follow along with the [Pizza Legends RPG](https://www.coopmode.dev/series/pizza-legends-rpg/) tutorial series.
+All credit for the game code and assets goes to the awesome devs at [Coop Mode](https://www.coopmode.dev/).
+The only differences between this repo and the tutorial code is that I'm using [Vite](https://vitejs.dev/) and TypeScript.
 
 This game uses HTML5, CSS3, and JavaScript.
+
+## Playing the Game
+
+The game is hosted on GitHub Pages [here](https://kensonjohnson.github.io/javascript-rpg/).
+It runs entirely in the browser, but is not optimized for mobile.
+Just point your browser at the link above and enjoy!
+
+### Controls
+
+- Arrow keys or WASD to move aroung
+- Spacebar to interact with objects
+- ESC to open the pause menu
 
 ## Installation
 
